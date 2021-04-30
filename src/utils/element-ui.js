@@ -30,6 +30,9 @@ import {
   TimeSelect,
   TimePicker,
   Switch,
+  Divider,
+  Table,
+  TableColumn,
 } from 'element-ui'
 
 Vue.use(Row)
@@ -58,6 +61,9 @@ Vue.use(DatePicker)
 Vue.use(TimeSelect)
 Vue.use(TimePicker)
 Vue.use(Switch)
+Vue.use(Divider)
+Vue.use(Table)
+Vue.use(TableColumn)
 Vue.use(Loading.directive)
 
 Vue.prototype.$loading = Loading.service
