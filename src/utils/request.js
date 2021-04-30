@@ -37,7 +37,6 @@ service.interceptors.response.use(
     return response
   },
   (error) => {
-    debugger
     console.log('err' + error) // for debug
     // eslint-disable-next-line
     // Message({
