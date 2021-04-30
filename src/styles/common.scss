@@ -1,0 +1,166 @@
+// default style
+$color-main: #d23e2f;
+$color-font-main: #3c3c3e;
+$color-component-main: #d23e2f;
+
+// flex center
+@mixin flex-center($direction: both) {
+  display: flex;
+
+  @if $direction==both {
+    justify-content: center;
+    align-items: center;
+  }
+
+  @else if $direction==x {
+    justify-content: center;
+  }
+
+  @else if $direction==y {
+    align-items: center;
+  }
+}
+
+// text font-size & line-height
+@mixin text-size($size: 12px, $height: 18px) {
+  font-size: $size;
+  line-height: $height;
+}
+
+// divider
+@mixin divider-style($color: #edf0f5, $marginTop: 12px, $marginBottom: 18px) {
+  background-color: $color;
+  margin-top: $marginTop;
+  margin-bottom: $marginBottom;
+}
+
+// route-common
+@mixin view($outer-padding: 0, $outer-height: calc(100% - 65px), $inner-height: calc(100% - 32px - 16px)) {
+  padding: $outer-padding;
+  height: $outer-height;
+  overflow: hidden;
+
+  .divider {
+    @include divider-style($marginTop: 15px, $marginBottom: 0);
+  }
+
+  .content-wrapper {
+    @include overflow-smooth;
+    box-sizing: border-box;
+    height: $inner-height;
+    padding: 15px 20px;
+    background-color: #f6f6f7;
+  }
+}
+
+//overflow-smooth
+@mixin overflow-smooth {
+  overflow: auto;
+  scroll-behavior: smooth;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    -webkit-appearance: none;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    //background: rgba(26, 157, 241, 0.5);
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+
+  &::-webkit-scrollbar-track {
+    //background: rgba(0,0,0,.1);
+    border-radius: 0;
+  }
+}
+
+// table
+@mixin new-table {
+  //diy border
+  $color-table-border: #d8dde6;
+
+  .el-table--border:after,
+  .el-table--group:after,
+  .el-table:before {
+    background-color: $color-table-border;
+  }
+
+  .el-table--border,
+  .el-table--group {
+    border-color: $color-table-border;
+  }
+
+  .el-table td,
+  .el-table th.is-leaf {
+    border-bottom: 1px solid $color-table-border;
+  }
+
+  .el-table--border th,
+  .el-table--border th.gutter:last-of-type {
+    border-bottom: 1px solid $color-table-border;
+  }
+
+  .el-table--border td,
+  .el-table--border th {
+    border-right: 1px solid $color-table-border;
+  }
+
+  //diy sort
+  .el-table .sort-caret.ascending {
+    // top: 2px;
+  }
+
+  .el-table .sort-caret.descending {
+    // bottom: 4px;
+  }
+}
+
+@mixin mask {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background: rgba($color: #000000, $alpha: 0.9);
+}
+@mixin ellipsis{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.api {
+  @include overflow-smooth;
+}
+
+.scrollWrap {
+  @include overflow-smooth;
+}
+
+.el-tooltip__popper.is-light {
+  border: 1px solid #d8dde6;
+}
+
+.amap-logo {
+  display: none; //去掉高德地图logo
+  opacity: 0; //去掉高德的版本号
+}
+
+.amap-copyright {
+  opacity: 0; //去掉高德的版本号
+}
+
+* {
+  box-sizing: border-box;
+}
+[v-cloak] {
+  display: none !important;
+}
+.el-select-dropdown__item{
+  text-align: left;
+}

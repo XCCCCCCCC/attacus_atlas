@@ -1,19 +1,55 @@
+<script>
+import TheHeader from '@/components/TheHeader'
+export default {
+  name: 'app',
+  components: { TheHeader },
+  props: {},
+  data() {
+    return {}
+  },
+  computed: {},
+  watch: {},
+  beforeCreate() {},
+  created() {},
+  beforeMount() {},
+  mounted() {},
+  beforeUpdate() {},
+  updated() {},
+  activated() {},
+  deactivated() {},
+  beforeDestroy() {},
+  destroyed() {},
+  methods: {},
+}
+</script>
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <el-container id="app">
+    <el-header>
+      <the-header />
+    </el-header>
+    <el-container>
+      <el-aside v-if="false" width="200px">Aside</el-aside>
+      <el-container>
+        <el-main>
+          <router-view />
+        </el-main>
+        <el-footer>Footer</el-footer>
+      </el-container>
+    </el-container>
+  </el-container>
 </template>
 
 <style lang="scss">
+html,
+body,
+#app {
+  height: 100%;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  // text-align: center;
   color: #2c3e50;
 }
 
