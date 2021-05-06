@@ -11,7 +11,7 @@ module.exports = {
     sockHost: 'http://0.0.0.0:8080',
     proxy: {
       '/dev': {
-        target: 'http://103.73.162.156:22/',
+        target: 'http://103.73.162.156:5000/',
         ws: true,
         changeOrigin: true,
         pathRewrite: {
