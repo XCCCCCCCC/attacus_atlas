@@ -33,7 +33,7 @@ export default {
         <el-main>
           <router-view />
         </el-main>
-        <el-footer>Footer</el-footer>
+        <el-footer v-if="false">Footer</el-footer>
       </el-container>
     </el-container>
   </el-container>

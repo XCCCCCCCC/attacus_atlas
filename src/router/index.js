@@ -5,6 +5,11 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/',
+    meta: { title: '查询' },
+    component: () => import(/* webpackChunkName: "about" */ '../views/Query.vue'),
+  },
+  {
     path: '/query',
     name: 'query',
     meta: { title: '查询' },

@@ -59,12 +59,14 @@ export default {
         carAge: '', // 车龄（单位为年）
         carUseKm: '', // 里程数（单位为公里）
         // 保单
+        hasPolicy: false,
         policyHolder: '', // 投保人
         policyInsuranceCompany: '', // 保险公司
         policyPaymentMethod: 1, // 缴费方式（月/年）
         policyYearCost: '', // 年费（单位为元）
         policyPaymentPeriod: '', // 缴费时长（单位为月）
         // 征信
+        hasCredit: false,
         creditIsDelay: false, // 是否当前有逾期（是/否）
         creditThreeMonthDelayTimes: '', // 近3月逾期次数
         creditSixMonthDelayTimes: '', // 近6月逾期次数
@@ -75,6 +77,7 @@ export default {
         creditSeriesYearDelayTimes: '', // 近1年连续逾期次数
         creditSeriesTwoYearDelayTimes: '', // 近2年连续逾期次数
         // 负债
+        hasDebt: false,
         debtCreditAmount: '', // 信用卡总额度
         debtCreditUsedAmount: '', // 已用额度
         debtLoanTimes: '', // 贷款次数
@@ -574,243 +577,257 @@ export default {
       </template>
       <!-- 保单 -->
       <el-divider>保单</el-divider>
-      <el-row :gutter="28">
-        <el-col :span="8">
-          <el-form-item label="投保人" prop="policyHolder">
-            <el-input v-model="queryForm.policyHolder" placeholder="请输入投保人"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="保险公司" prop="policyInsuranceCompany">
-            <el-input v-model="queryForm.policyInsuranceCompany" placeholder="请输入保险公司"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="缴费方式" prop="policyPaymentMethod">
-            <el-radio-group v-model="queryForm.policyPaymentMethod" placeholder="请选择缴费方式">
-              <el-radio :label="1">月</el-radio>
-              <el-radio :label="2">年</el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="年费（元）" prop="policyYearCost">
-            <el-input-number
-              v-model="queryForm.policyYearCost"
-              controls-position="right"
-              :min="0"
-              style="width: 100%;"
-              placeholder="请输入年费（元）"
-            ></el-input-number>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="缴费时长（月）" prop="policyPaymentPeriod">
-            <el-input-number
-              v-model="queryForm.policyPaymentPeriod"
-              controls-position="right"
-              :min="0"
-              style="width: 100%;"
-              placeholder="请输入缴费时长（月）"
-            ></el-input-number>
-          </el-form-item>
-        </el-col>
-      </el-row>
+      <el-form-item label="保单">
+        <el-switch v-model="queryForm.hasPolicy" placeholder="请选择保单"></el-switch>
+      </el-form-item>
+      <template v-if="queryForm.hasPolicy">
+        <el-row :gutter="28">
+          <el-col :span="8">
+            <el-form-item label="投保人" prop="policyHolder">
+              <el-input v-model="queryForm.policyHolder" placeholder="请输入投保人"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="保险公司" prop="policyInsuranceCompany">
+              <el-input v-model="queryForm.policyInsuranceCompany" placeholder="请输入保险公司"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="缴费方式" prop="policyPaymentMethod">
+              <el-radio-group v-model="queryForm.policyPaymentMethod" placeholder="请选择缴费方式">
+                <el-radio :label="1">月</el-radio>
+                <el-radio :label="2">年</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="年费（元）" prop="policyYearCost">
+              <el-input-number
+                v-model="queryForm.policyYearCost"
+                controls-position="right"
+                :min="0"
+                style="width: 100%;"
+                placeholder="请输入年费（元）"
+              ></el-input-number>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="缴费时长（月）" prop="policyPaymentPeriod">
+              <el-input-number
+                v-model="queryForm.policyPaymentPeriod"
+                controls-position="right"
+                :min="0"
+                style="width: 100%;"
+                placeholder="请输入缴费时长（月）"
+              ></el-input-number>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </template>
 
       <!-- 征信 -->
       <el-divider>征信</el-divider>
-
-      <el-form-item label="是否当前有逾期" prop="creditIsDelay">
-        <el-radio-group v-model="queryForm.creditIsDelay" placeholder="请选择是否当前有逾期">
-          <el-radio :label="true">是</el-radio>
-          <el-radio :label="false">否</el-radio>
-        </el-radio-group>
+      <el-form-item label="征信">
+        <el-switch v-model="queryForm.hasCredit" placeholder="请选择征信"></el-switch>
       </el-form-item>
-      <el-row :gutter="28">
-        <template v-if="queryForm.creditIsDelay">
-          <el-col :span="8">
-            <el-form-item label="近3月逾期次" prop="creditThreeMonthDelayTimes">
-              <el-input-number
-                v-model="queryForm.creditThreeMonthDelayTimes"
-                controls-position="right"
-                :min="0"
-                style="width: 100%;"
-                placeholder="请输入近3月逾期次"
-              ></el-input-number>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="近6月逾期次" prop="creditSixMonthDelayTimes">
-              <el-input-number
-                v-model="queryForm.creditSixMonthDelayTimes"
-                controls-position="right"
-                :min="0"
-                style="width: 100%;"
-                placeholder="请输入近6月逾期次"
-              ></el-input-number>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="近1年逾期次" prop="creditYearDelayTimes">
-              <el-input-number
-                v-model="queryForm.creditYearDelayTimes"
-                controls-position="right"
-                :min="0"
-                style="width: 100%;"
-                placeholder="请输入近1年逾期次"
-              ></el-input-number>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="近2年逾期次" prop="creditTwoYearDelayTimes">
-              <el-input-number
-                v-model="queryForm.creditTwoYearDelayTimes"
-                controls-position="right"
-                :min="0"
-                style="width: 100%;"
-                placeholder="请输入近2年逾期次"
-              ></el-input-number>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="近3月连续逾期次" prop="creditSeriesThreeMonthDelayTimes">
-              <el-input-number
-                v-model="queryForm.creditSeriesThreeMonthDelayTimes"
-                controls-position="right"
-                :min="0"
-                style="width: 100%;"
-                placeholder="请输入近3月连续逾期次"
-              ></el-input-number>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="近6月连续逾期次" prop="creditSeriesSixMonthDelayTimes">
-              <el-input-number
-                v-model="queryForm.creditSeriesSixMonthDelayTimes"
-                controls-position="right"
-                :min="0"
-                style="width: 100%;"
-                placeholder="请输入"
-              ></el-input-number>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="近1年连续逾期次" prop="creditSeriesYearDelayTimes">
-              <el-input-number
-                v-model="queryForm.creditSeriesYearDelayTimes"
-                controls-position="right"
-                :min="0"
-                style="width: 100%;"
-                placeholder="请输入"
-              ></el-input-number>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="近2年连续逾期次" prop="creditSeriesTwoYearDelayTimes">
-              <el-input-number
-                v-model="queryForm.creditSeriesTwoYearDelayTimes"
-                controls-position="right"
-                :min="0"
-                style="width: 100%;"
-                placeholder="请输入"
-              ></el-input-number>
-            </el-form-item>
-          </el-col>
-        </template>
-      </el-row>
+      <template v-if="queryForm.hasCredit">
+        <el-form-item label="是否当前有逾期" prop="creditIsDelay">
+          <el-radio-group v-model="queryForm.creditIsDelay" placeholder="请选择是否当前有逾期">
+            <el-radio :label="true">是</el-radio>
+            <el-radio :label="false">否</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-row :gutter="28">
+          <template v-if="queryForm.creditIsDelay">
+            <el-col :span="8">
+              <el-form-item label="近3月逾期次" prop="creditThreeMonthDelayTimes">
+                <el-input-number
+                  v-model="queryForm.creditThreeMonthDelayTimes"
+                  controls-position="right"
+                  :min="0"
+                  style="width: 100%;"
+                  placeholder="请输入近3月逾期次"
+                ></el-input-number>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="近6月逾期次" prop="creditSixMonthDelayTimes">
+                <el-input-number
+                  v-model="queryForm.creditSixMonthDelayTimes"
+                  controls-position="right"
+                  :min="0"
+                  style="width: 100%;"
+                  placeholder="请输入近6月逾期次"
+                ></el-input-number>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="近1年逾期次" prop="creditYearDelayTimes">
+                <el-input-number
+                  v-model="queryForm.creditYearDelayTimes"
+                  controls-position="right"
+                  :min="0"
+                  style="width: 100%;"
+                  placeholder="请输入近1年逾期次"
+                ></el-input-number>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="近2年逾期次" prop="creditTwoYearDelayTimes">
+                <el-input-number
+                  v-model="queryForm.creditTwoYearDelayTimes"
+                  controls-position="right"
+                  :min="0"
+                  style="width: 100%;"
+                  placeholder="请输入近2年逾期次"
+                ></el-input-number>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="近3月连续逾期次" prop="creditSeriesThreeMonthDelayTimes">
+                <el-input-number
+                  v-model="queryForm.creditSeriesThreeMonthDelayTimes"
+                  controls-position="right"
+                  :min="0"
+                  style="width: 100%;"
+                  placeholder="请输入近3月连续逾期次"
+                ></el-input-number>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="近6月连续逾期次" prop="creditSeriesSixMonthDelayTimes">
+                <el-input-number
+                  v-model="queryForm.creditSeriesSixMonthDelayTimes"
+                  controls-position="right"
+                  :min="0"
+                  style="width: 100%;"
+                  placeholder="请输入"
+                ></el-input-number>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="近1年连续逾期次" prop="creditSeriesYearDelayTimes">
+                <el-input-number
+                  v-model="queryForm.creditSeriesYearDelayTimes"
+                  controls-position="right"
+                  :min="0"
+                  style="width: 100%;"
+                  placeholder="请输入"
+                ></el-input-number>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="近2年连续逾期次" prop="creditSeriesTwoYearDelayTimes">
+                <el-input-number
+                  v-model="queryForm.creditSeriesTwoYearDelayTimes"
+                  controls-position="right"
+                  :min="0"
+                  style="width: 100%;"
+                  placeholder="请输入"
+                ></el-input-number>
+              </el-form-item>
+            </el-col>
+          </template>
+        </el-row>
+      </template>
 
       <!-- 负债 -->
       <el-divider>负债</el-divider>
-      <el-row :gutter="28">
-        <el-col :span="8">
-          <el-form-item label="信用卡总额度" prop="debtCreditAmount">
-            <el-input-number
-              v-model="queryForm.debtCreditAmount"
-              controls-position="right"
-              :min="0"
-              style="width: 100%;"
-              placeholder="请输入信用卡总额度"
-            ></el-input-number>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="已用额度" prop="debtCreditUsedAmount">
-            <el-input-number
-              v-model="queryForm.debtCreditUsedAmount"
-              controls-position="right"
-              :min="0"
-              style="width: 100%;"
-              placeholder="请输入已用额度"
-            ></el-input-number>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="贷款次数" prop="debtLoanTimes">
-            <el-input-number
-              v-model="queryForm.debtLoanTimes"
-              controls-position="right"
-              :min="0"
-              style="width: 100%;"
-              placeholder="请输入贷款次数"
-            ></el-input-number>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="贷款总额" prop="debtLoanAmount">
-            <el-input-number
-              v-model="queryForm.debtLoanAmount"
-              controls-position="right"
-              :min="0"
-              style="width: 100%;"
-              placeholder="请输入贷款总额"
-            ></el-input-number>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="网贷次数" prop="debtOnlineLoanTimes">
-            <el-input-number
-              v-model="queryForm.debtOnlineLoanTimes"
-              controls-position="right"
-              :min="0"
-              style="width: 100%;"
-              placeholder="请输入网贷次数"
-            ></el-input-number>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="网贷总额" prop="debtOnlineLoanAmount">
-            <el-input-number
-              v-model="queryForm.debtOnlineLoanAmount"
-              controls-position="right"
-              :min="0"
-              style="width: 100%;"
-              placeholder="请输入网贷总额"
-            ></el-input-number>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="近3月查询" prop="debtThreeMonthQueryTimes">
-            <el-input-number
-              v-model="queryForm.debtThreeMonthQueryTimes"
-              controls-position="right"
-              :min="0"
-              style="width: 100%;"
-              placeholder="请输入近3月查询"
-            ></el-input-number>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="近6月查询" prop="debtSixMonthQueryTimes">
-            <el-input-number
-              v-model="queryForm.debtSixMonthQueryTimes"
-              controls-position="right"
-              :min="0"
-              style="width: 100%;"
-              placeholder="请输入近6月查询"
-            ></el-input-number>
-          </el-form-item>
-        </el-col>
-      </el-row>
+      <el-form-item label="负债">
+        <el-switch v-model="queryForm.hasDebt" placeholder="请选择负债"></el-switch>
+      </el-form-item>
+      <template v-if="queryForm.hasDebt">
+        <el-row :gutter="28">
+          <el-col :span="8">
+            <el-form-item label="信用卡总额度" prop="debtCreditAmount">
+              <el-input-number
+                v-model="queryForm.debtCreditAmount"
+                controls-position="right"
+                :min="0"
+                style="width: 100%;"
+                placeholder="请输入信用卡总额度"
+              ></el-input-number>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="已用额度" prop="debtCreditUsedAmount">
+              <el-input-number
+                v-model="queryForm.debtCreditUsedAmount"
+                controls-position="right"
+                :min="0"
+                style="width: 100%;"
+                placeholder="请输入已用额度"
+              ></el-input-number>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="贷款次数" prop="debtLoanTimes">
+              <el-input-number
+                v-model="queryForm.debtLoanTimes"
+                controls-position="right"
+                :min="0"
+                style="width: 100%;"
+                placeholder="请输入贷款次数"
+              ></el-input-number>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="贷款总额" prop="debtLoanAmount">
+              <el-input-number
+                v-model="queryForm.debtLoanAmount"
+                controls-position="right"
+                :min="0"
+                style="width: 100%;"
+                placeholder="请输入贷款总额"
+              ></el-input-number>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="网贷次数" prop="debtOnlineLoanTimes">
+              <el-input-number
+                v-model="queryForm.debtOnlineLoanTimes"
+                controls-position="right"
+                :min="0"
+                style="width: 100%;"
+                placeholder="请输入网贷次数"
+              ></el-input-number>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="网贷总额" prop="debtOnlineLoanAmount">
+              <el-input-number
+                v-model="queryForm.debtOnlineLoanAmount"
+                controls-position="right"
+                :min="0"
+                style="width: 100%;"
+                placeholder="请输入网贷总额"
+              ></el-input-number>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="近3月查询" prop="debtThreeMonthQueryTimes">
+              <el-input-number
+                v-model="queryForm.debtThreeMonthQueryTimes"
+                controls-position="right"
+                :min="0"
+                style="width: 100%;"
+                placeholder="请输入近3月查询"
+              ></el-input-number>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="近6月查询" prop="debtSixMonthQueryTimes">
+              <el-input-number
+                v-model="queryForm.debtSixMonthQueryTimes"
+                controls-position="right"
+                :min="0"
+                style="width: 100%;"
+                placeholder="请输入近6月查询"
+              ></el-input-number>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </template>
 
       <el-form-item>
         <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -832,22 +849,298 @@ export default {
           <span>{{ scope.row.loan_name }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="国籍">
+      <!-- <el-table-column label="国籍">
         <template slot-scope="scope">
           <span>{{ scope.row.nation }}</span>
         </template>
-      </el-table-column>
-      <el-table-column label="年龄">
+      </el-table-column>-->
+      <el-table-column label="最小年龄">
         <template slot-scope="scope">
-          <span>{{ scope.row.age }}</span>
+          <span>{{ scope.row.low_age }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="贷款额度">
+      <el-table-column label="最大年龄">
         <template slot-scope="scope">
-          <span>{{ scope.row.loan_limit }}</span>
+          <span>{{ scope.row.high_age }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="贷款利息">
+      <el-table-column label="最低贷款额度">
+        <template slot-scope="scope">
+          <span>{{ scope.row.low_loan_limit }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="最高贷款额度">
+        <template slot-scope="scope">
+          <span>{{ scope.row.high_loan_limit }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="上班公积金">
+        <template slot-scope="scope">
+          <span>{{ scope.row.work_accumulation_fund }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="上班社保">
+        <template slot-scope="scope">
+          <span>{{ scope.row.work_social_security }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="上班打卡工资">
+        <template slot-scope="scope">
+          <span>{{ scope.row.work_salary }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="公积金缴纳时长">
+        <template slot-scope="scope">
+          <span>{{ scope.row.work_payment_period }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="上班公司性质">
+        <template slot-scope="scope">
+          <span>{{ scope.row.work_company_nature }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="做生意营业执照">
+        <template slot-scope="scope">
+          <span>{{ scope.row.business_license }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="做生意职位">
+        <template slot-scope="scope">
+          <span>{{ scope.row.business_position }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="做生意经营时长">
+        <template slot-scope="scope">
+          <span>{{ scope.row.business_hour }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="做生意经营地址">
+        <template slot-scope="scope">
+          <span>{{ scope.row.business_address }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="做生意经营行业">
+        <template slot-scope="scope">
+          <span>{{ scope.row.business_industry }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="做生意流水">
+        <template slot-scope="scope">
+          <span>{{ scope.row.business_flow }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="做生意税">
+        <template slot-scope="scope">
+          <span>{{ scope.row.business_tax }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="房屋是否本地">
+        <template slot-scope="scope">
+          <span>{{ scope.row.house_local }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="房屋区域">
+        <template slot-scope="scope">
+          <span>{{ scope.row.house_region }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="房屋购买方式">
+        <template slot-scope="scope">
+          <span>{{ scope.row.house_buy_method }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="房屋市值（单位为万）">
+        <template slot-scope="scope">
+          <span>{{ scope.row.house_value }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="房屋月供（单位为元）">
+        <template slot-scope="scope">
+          <span>{{ scope.row.house_monthly_payment }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="房屋还款期数（单位为月）">
+        <template slot-scope="scope">
+          <span>{{ scope.row.house_payment_period }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="房龄（单位为年）">
+        <template slot-scope="scope">
+          <span>{{ scope.row.house_age }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="房屋权利人数">
+        <template slot-scope="scope">
+          <span>{{ scope.row.house_interest_num }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="房屋权利人年龄">
+        <template slot-scope="scope">
+          <span>{{ scope.row.house_interest_age }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="房屋是否抵押(无/一押)">
+        <template slot-scope="scope">
+          <span>{{ scope.row.house_is_mortgage }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="车是否本地">
+        <template slot-scope="scope">
+          <span>{{ scope.row.car_local }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="车牌照">
+        <template slot-scope="scope">
+          <span>{{ scope.row.car_license }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="车购买方式">
+        <template slot-scope="scope">
+          <span>{{ scope.row.car_buy_method }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="车辆市值（单位为万）">
+        <template slot-scope="scope">
+          <span>{{ scope.row.car_value }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="车月供（单位为元）">
+        <template slot-scope="scope">
+          <span>{{ scope.row.car_monthly_payment }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="车还款期数（单位为月）">
+        <template slot-scope="scope">
+          <span>{{ scope.row.car_payment_period }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="车龄（单位为年）">
+        <template slot-scope="scope">
+          <span>{{ scope.row.car_age }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="里程数（单位为公里）">
+        <template slot-scope="scope">
+          <span>{{ scope.row.car_use_km }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="保单投保人">
+        <template slot-scope="scope">
+          <span>{{ scope.row.policy_holder }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="保单保险公司">
+        <template slot-scope="scope">
+          <span>{{ scope.row.policy_insurance_company }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="保单缴费方式">
+        <template slot-scope="scope">
+          <span>{{ scope.row.policy_payment_method }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="保单年费（单位为元）">
+        <template slot-scope="scope">
+          <span>{{ scope.row.policy_year_cost }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="保单缴费时长（单位为月）">
+        <template slot-scope="scope">
+          <span>{{ scope.row.policy_payemnt_period }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="征信是否当前有逾期(是/否)">
+        <template slot-scope="scope">
+          <span>{{ scope.row.credit_is_delay }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="征信近3月逾期次">
+        <template slot-scope="scope">
+          <span>{{ scope.row.credit_three_month_delay_times }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="征信近6月逾期次">
+        <template slot-scope="scope">
+          <span>{{ scope.row.credit_six_month_delay_times }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="征信近12月逾期次">
+        <template slot-scope="scope">
+          <span>{{ scope.row.credit_year_delay_times }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="征信近24月逾期次">
+        <template slot-scope="scope">
+          <span>{{ scope.row.credit_two_year_delay_times }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="征信近3月连续逾期次">
+        <template slot-scope="scope">
+          <span>{{ scope.row.credit_series_three_month_delay_times }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="征信近6月连续逾期次">
+        <template slot-scope="scope">
+          <span>{{ scope.row.credit_series_six_month_delay_times }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="征信近12月连续逾期次">
+        <template slot-scope="scope">
+          <span>{{ scope.row.credit_series_year_delay_times }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="征信近24月连续逾期次">
+        <template slot-scope="scope">
+          <span>{{ scope.row.credit_series_two_year_delay_times }}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="负债信用卡总额">
+        <template slot-scope="scope">
+          <span>{{ scope.row.debt_credit_amount }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="负债已用额度">
+        <template slot-scope="scope">
+          <span>{{ scope.row.debt_credit_used_amount }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="负债贷款笔数">
+        <template slot-scope="scope">
+          <span>{{ scope.row.debt_loan_times }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="负债贷款总额">
+        <template slot-scope="scope">
+          <span>{{ scope.row.debt_loan_amount }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="负债网贷笔数">
+        <template slot-scope="scope">
+          <span>{{ scope.row.debt_online_loan_times }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="负债网贷总额">
+        <template slot-scope="scope">
+          <span>{{ scope.row.debt_online_loan_amount }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="负债近3月查询">
+        <template slot-scope="scope">
+          <span>{{ scope.row.debt_three_month_query_times }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="负债近6月查询">
+        <template slot-scope="scope">
+          <span>{{ scope.row.debt_six_month_query_times }}</span>
+        </template>
+      </el-table-column>
+
+      <!-- <el-table-column label="贷款利息">
         <template slot-scope="scope">
           <span>{{ scope.row.loan_interest }}</span>
         </template>
@@ -906,7 +1199,7 @@ export default {
         <template slot-scope="scope">
           <span>{{ scope.row.debt_algorithm }}</span>
         </template>
-      </el-table-column>
+      </el-table-column>-->
     </el-table>
   </div>
 </template>
