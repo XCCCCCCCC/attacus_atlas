@@ -33,6 +33,7 @@ import {
   Divider,
   Table,
   TableColumn,
+  Pagination,
 } from 'element-ui'
 
 Vue.use(Row)
@@ -64,6 +65,7 @@ Vue.use(Switch)
 Vue.use(Divider)
 Vue.use(Table)
 Vue.use(TableColumn)
+Vue.use(Pagination)
 Vue.use(Loading.directive)
 
 Vue.prototype.$loading = Loading.service

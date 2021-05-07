@@ -20,6 +20,7 @@ export default {
         age: 18, // 年龄
         isKnow: true, // 家人是否知晓（是/否）
         address: '', // 地址
+        isBlankRoster: true, // 是否白户
         // 上班
         hasWork: false,
         workAccumulationFund: '', // 公积金
@@ -279,6 +280,14 @@ export default {
         <el-col :span="8">
           <el-form-item label="地址" prop="address">
             <el-input type="textarea" v-model="queryForm.address" placeholder="请输入地址"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="是否白户" prop="isBlankRoster">
+            <el-radio-group v-model="queryForm.isBlankRoster" placeholder="请选择是否白户">
+              <el-radio :label="true">是</el-radio>
+              <el-radio :label="false">否</el-radio>
+            </el-radio-group>
           </el-form-item>
         </el-col>
       </el-row>

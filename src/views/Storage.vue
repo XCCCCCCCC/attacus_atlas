@@ -1,5 +1,5 @@
 <script>
-import { main } from '@/api/query'
+import { add, list } from '@/api/storage'
 export default {
   name: 'query',
   components: {},
@@ -13,13 +13,13 @@ export default {
         loanName: '', // 贷款机构名称
         nation: '', // 国籍
         age: 18, // 年龄
-        loadnLimit: '', // 贷款额度
-        loadnInterest: '', // 贷款利息
+        loanLimit: '', // 贷款额度
+        loanInterest: '', // 贷款利息
         repaymentMethod: '', // 还款方式
         queryTimes: 0, // 查询次数
         residence: '', // 居住地
         repaymentTerm: '', // 期限
-        material: true, // 需要材料
+        material: '', // 需要材料
         creditRequirements: '', // 征信要求
         prepayment: '', // 提前还款
         incomingRequirements: '', // 进件要求
@@ -30,26 +30,22 @@ export default {
       summaryFormRules: {},
       detailForm: {
         id: '',
-        date: new Date(),
-        name: '', // 姓名
-        telNum: '', // 手机号
-        wechatNum: '', // 微信号
-        identityCardNum: '', // 身份证号码
-        education: 1, // 学历（专/本/硕/博）
-        loanAmount: 0, // 贷款金额
-        loanUse: '', // 贷款用途
-        age: 18, // 年龄
-        isKnow: true, // 家人是否知晓（是/否）
-        address: '', // 地址
+        loanType: '', // 贷款类型
+        loanName: '', // 贷款机构名称
+        lowAge: 18, // 最小年龄
+        highAge: 100, // 最大年龄
+        lowLoanLimit: 10000, // 最低贷款额度
+        highLoanLimit: 1000000, // 最高贷款额度
+        isBlankRoster: true, // 是否白户
         // 上班
-        hasWork: false,
+        hasWork: true,
         workAccumulationFund: '', // 公积金
         workSocialSecurity: '', // 社保
         workSalary: '', // 打卡工资
         workHour: '', // 工作时长
         workCompanyNature: 1, // 公司性质（事业/国企/民营）
         // 做生意
-        hasBusiness: false,
+        hasBusiness: true,
         businessLicense: '', // 营业执照
         businessPosition: '', // 职位
         businessHour: '', // 经营时长
@@ -58,7 +54,7 @@ export default {
         businessFlow: '', // 流水
         businessTax: '', // 税
         // 房
-        hasHouse: false,
+        hasHouse: true,
         houseLocal: true, // 是否本地（上海/外地）
         houseRegion: '', // 区域
         houseBuyMethod: 1, // 购买方式（全款/按揭）
@@ -70,7 +66,7 @@ export default {
         houseInterestAge: '', // 权利人年龄
         houseIsMortage: false, // 是否抵押（是/否）
         // 车
-        hasCar: false,
+        hasCar: true,
         carLocal: true, // 是否本地（是/否）
         carLicense: '', // 车牌
         carBuyMethod: 1, // 购买方式（全款/按揭）
@@ -80,14 +76,14 @@ export default {
         carAge: '', // 车龄（单位为年）
         carUseKm: '', // 里程数（单位为公里）
         // 保单
-        hasPolicy: false,
+        hasPolicy: true,
         policyHolder: '', // 投保人
         policyInsuranceCompany: '', // 保险公司
         policyPaymentMethod: 1, // 缴费方式（月/年）
         policyYearCost: '', // 年费（单位为元）
         policyPaymentPeriod: '', // 缴费时长（单位为月）
         // 征信
-        hasCredit: false,
+        hasCredit: true,
         creditIsDelay: false, // 是否当前有逾期（是/否）
         creditThreeMonthDelayTimes: '', // 近3月逾期次数
         creditSixMonthDelayTimes: '', // 近6月逾期次数
@@ -98,7 +94,7 @@ export default {
         creditSeriesYearDelayTimes: '', // 近1年连续逾期次数
         creditSeriesTwoYearDelayTimes: '', // 近2年连续逾期次数
         // 负债
-        hasDebt: false,
+        hasDebt: true,
         debtCreditAmount: '', // 信用卡总额度
         debtCreditUsedAmount: '', // 已用额度
         debtLoanTimes: '', // 贷款次数
@@ -160,12 +156,17 @@ export default {
         // ],
       },
       resultData: [],
+      page: 1,
+      pageSize: 10,
+      total: 0,
     }
   },
   computed: {},
   watch: {},
   beforeCreate() {},
-  created() {},
+  created() {
+    this.handleRefresh()
+  },
   beforeMount() {},
   mounted() {},
   beforeUpdate() {},
@@ -181,16 +182,23 @@ export default {
     onSubmit() {
       this.$refs.detailForm.validate((valid) => {
         if (valid) {
-          const keys = Object.keys(this.detailForm)
-          const data = {}
-          for (const key of keys) {
-            data[this.hump2Underline(key)] = this.detailForm[key]
+          const summaryKeys = Object.keys(this.summaryForm)
+          const detailKeys = Object.keys(this.detailForm)
+          const data = {
+            summary: {},
+            detail: {},
           }
-          console.log(data)
-          main(data)
+          for (const key of summaryKeys) {
+            data.summary[this.hump2Underline(key)] = this.summaryForm[key]
+          }
+          for (const key of detailKeys) {
+            data.detail[this.hump2Underline(key)] = this.detailForm[key]
+          }
+          add(data)
             .then((res) => {
               console.log(data)
-              this.resultData = res
+              // this.resultData = res
+              this.handleRefresh()
             })
             .catch((err) => {
               console.log(err)
@@ -200,6 +208,18 @@ export default {
           return false
         }
       })
+    },
+    handleRefresh() {
+      const params = {
+        page: this.page,
+        pageSize: this.pageSize,
+      }
+      list(params)
+        .then((res) => {
+          this.total = res.total
+          this.resultData = res.data
+        })
+        .catch((err) => {})
     },
   },
 }
@@ -218,9 +238,104 @@ export default {
       <!-- 概要信息 -->
       <el-divider>概要信息</el-divider>
       <el-row :gutter="28">
-        <el-col :span="8"></el-col>
-        <el-col :span="8"></el-col>
-        <el-col :span="8"></el-col>
+        <el-col :span="8">
+          <el-form-item label="贷款类型" prop="loanType">
+            <el-input v-model="summaryForm.loanType" placeholder="请输入贷款类型"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="贷款机构名称" prop="loanName">
+            <el-input v-model="summaryForm.loanType" placeholder="请输入贷款机构名称"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="国籍" prop="nation">
+            <el-input v-model="summaryForm.nation" placeholder="请输入国籍"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="年龄" prop="age">
+            <el-input-number
+              v-model="summaryForm.age"
+              controls-position="right"
+              :min="18"
+              :max="100"
+              style="width: 100%;"
+              placeholder="请输入年龄"
+            ></el-input-number>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="贷款额度" prop="loanLimit">
+            <el-input v-model="summaryForm.loanLimit" placeholder="请输入贷款额度"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="贷款利息" prop="loanInterest">
+            <el-input v-model="summaryForm.loanInterest" placeholder="请输入贷款利息"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="还款方式" prop="repaymentMethod">
+            <el-input v-model="summaryForm.repaymentMethod" placeholder="请输入还款方式"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="查询次数" prop="queryTimes">
+            <el-input-number
+              v-model="summaryForm.queryTimes"
+              controls-position="right"
+              :min="0"
+              style="width: 100%;"
+              placeholder="请输入查询次数"
+            ></el-input-number>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="居住地" prop="residence">
+            <el-input v-model="summaryForm.residence" placeholder="请输入居住地"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="期限" prop="repaymentTerm">
+            <el-input v-model="summaryForm.repaymentTerm" placeholder="请输入期限"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="需要材料" prop="material">
+            <el-input v-model="summaryForm.material" placeholder="请输入需要材料"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="征信要求" prop="creditRequirements">
+            <el-input v-model="summaryForm.creditRequirements" placeholder="请输入征信要求"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="提前还款" prop="prepayment">
+            <el-input v-model="summaryForm.prepayment" placeholder="请输入提前还款"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="进件要求" prop="incomingRequirements">
+            <el-input v-model="summaryForm.incomingRequirements" placeholder="请输入进件要求"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="申请流程" prop="applicationProcess">
+            <el-input v-model="summaryForm.applicationProcess" placeholder="请输入申请流程"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="额度算法" prop="quotaAlgorithm">
+            <el-input v-model="summaryForm.quotaAlgorithm" placeholder="请输入额度算法"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="负债算法" prop="debtAlgorithm">
+            <el-input v-model="summaryForm.debtAlgorithm" placeholder="请输入负债算法"></el-input>
+          </el-form-item>
+        </el-col>
       </el-row>
     </el-form>
     <el-form
@@ -235,87 +350,67 @@ export default {
       <el-divider>基本信息</el-divider>
       <el-row :gutter="28">
         <el-col :span="8">
-          <el-form-item label="日期" prop="date">
-            <el-date-picker
-              type="date"
-              placeholder="请选择日期"
-              v-model="detailForm.date"
-              style="width: 100%;"
-            ></el-date-picker>
+          <el-form-item label="贷款类型" prop="loanType">
+            <el-input v-model="detailForm.loanType" placeholder="请输入贷款类型"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="姓名" prop="name">
-            <el-input v-model="detailForm.name" placeholder="请输入姓名"></el-input>
+          <el-form-item label="贷款机构名称" prop="loanName">
+            <el-input v-model="detailForm.loanName" placeholder="请输入贷款机构名称"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="手机号" prop="telNum">
-            <el-input v-model="detailForm.telNum" placeholder="请输入手机号"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="微信号" prop="wechatNum">
-            <el-input v-model="detailForm.wechatNum" placeholder="请输入微信号"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="身份证号码" prop="identityCardNum">
-            <el-input v-model="detailForm.identityCardNum" placeholder="请输入身份证号码"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="学历" prop="education">
-            <el-radio-group v-model="detailForm.education" placeholder="请选择学历">
-              <el-radio :label="1">专</el-radio>
-              <el-radio :label="2">本</el-radio>
-              <el-radio :label="3">硕</el-radio>
-              <el-radio :label="4">博</el-radio>
-              <el-radio :label="5">其他</el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="22">
-        <el-col :span="8">
-          <el-form-item label="贷款金额" prop="loanAmount">
+          <el-form-item label="最小年龄" prop="lowAge">
             <el-input-number
-              v-model="detailForm.loanAmount"
-              controls-position="right"
-              :min="1"
-              style="width: 100%;"
-              placeholder="请输入贷款金额"
-            ></el-input-number>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="贷款用途" prop="loanUse">
-            <el-input v-model="detailForm.loanUse" placeholder="请输入贷款用途"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="年龄" prop="age">
-            <el-input-number
-              v-model="detailForm.age"
+              v-model="detailForm.lowAge"
               controls-position="right"
               :min="18"
               :max="100"
               style="width: 100%;"
-              placeholder="请输入年龄"
+              placeholder="请输入最小年龄"
             ></el-input-number>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="家人是否知晓" prop="isKnow">
-            <el-radio-group v-model="detailForm.isKnow" placeholder="请选择家人是否知晓">
-              <el-radio :label="true">是</el-radio>
-              <el-radio :label="false">否</el-radio>
-            </el-radio-group>
+          <el-form-item label="最大年龄" prop="highAge">
+            <el-input-number
+              v-model="detailForm.highAge"
+              controls-position="right"
+              :min="18"
+              :max="100"
+              style="width: 100%;"
+              placeholder="请输入最大年龄"
+            ></el-input-number>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="地址" prop="address">
-            <el-input type="textarea" v-model="detailForm.address" placeholder="请输入地址"></el-input>
+          <el-form-item label="最低贷款额度" prop="lowLoanLimit">
+            <el-input-number
+              v-model="detailForm.lowLoanLimit"
+              controls-position="right"
+              :min="0"
+              style="width: 100%;"
+              placeholder="请输入最低贷款额度"
+            ></el-input-number>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="最高贷款额度" prop="highLoanLimit">
+            <el-input-number
+              v-model="detailForm.highLoanLimit"
+              controls-position="right"
+              :min="0"
+              style="width: 100%;"
+              placeholder="请输入最高贷款额度"
+            ></el-input-number>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="是否白户" prop="isBlankRoster">
+            <el-radio-group v-model="detailForm.isBlankRoster" placeholder="请选择公司性质">
+              <el-radio :label="true">是</el-radio>
+              <el-radio :label="false">否</el-radio>
+            </el-radio-group>
           </el-form-item>
         </el-col>
       </el-row>
@@ -866,18 +961,102 @@ export default {
           </el-col>
         </el-row>
       </template>
-
       <el-form-item>
-        <el-button type="primary" @click="onSubmit">查询</el-button>
+        <el-button type="primary" @click="onSubmit">添加</el-button>
       </el-form-item>
     </el-form>
     <el-table :data="resultData" style="width: 100%,">
       <el-table-column label="序号">
         <template slot-scope="scope">
-          <span>{{ scope.row.id }}</span>
+          <span>{{ scope.row.summary.id }}</span>
         </template>
       </el-table-column>
       <el-table-column label="贷款类型">
+        <template slot-scope="scope">
+          <span>{{ scope.row.summary.loan_type }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="贷款机构名称">
+        <template slot-scope="scope">
+          <span>{{ scope.row.summary.loan_name }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="国籍">
+        <template slot-scope="scope">
+          <span>{{ scope.row.summary.nation }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="年龄">
+        <template slot-scope="scope">
+          <span>{{ scope.row.summary.age }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="贷款额度">
+        <template slot-scope="scope">
+          <span>{{ scope.row.summary.loan_limit }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="贷款利息">
+        <template slot-scope="scope">
+          <span>{{ scope.row.summary.loan_interest }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="还款方式">
+        <template slot-scope="scope">
+          <span>{{ scope.row.summary.repayment_method }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="查询次数">
+        <template slot-scope="scope">
+          <span>{{ scope.row.summary.query_times }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="居住地">
+        <template slot-scope="scope">
+          <span>{{ scope.row.summary.resident }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="期限">
+        <template slot-scope="scope">
+          <span>{{ scope.row.summary.repayment_term }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="需要材料">
+        <template slot-scope="scope">
+          <span>{{ scope.row.summary.material }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="征信要求">
+        <template slot-scope="scope">
+          <span>{{ scope.row.summary.credit_requirements }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="提前还款">
+        <template slot-scope="scope">
+          <span>{{ scope.row.summary.prepayment }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="进件要求">
+        <template slot-scope="scope">
+          <span>{{ scope.row.summary.incoming_requirements }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="申请流程">
+        <template slot-scope="scope">
+          <span>{{ scope.row.summary.application_process }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="额度算法">
+        <template slot-scope="scope">
+          <span>{{ scope.row.summary.quota_algorithm }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="负债算法">
+        <template slot-scope="scope">
+          <span>{{ scope.row.summary.debt_algorithm }}</span>
+        </template>
+      </el-table-column>
+      <!-- <el-table-column label="贷款类型">
         <template slot-scope="scope">
           <span>{{ scope.row.loan_type }}</span>
         </template>
@@ -886,7 +1065,7 @@ export default {
         <template slot-scope="scope">
           <span>{{ scope.row.loan_name }}</span>
         </template>
-      </el-table-column>
+      </el-table-column>-->
       <!-- <el-table-column label="国籍">
         <template slot-scope="scope">
           <span>{{ scope.row.nation }}</span>
@@ -894,287 +1073,287 @@ export default {
       </el-table-column>-->
       <el-table-column label="最小年龄">
         <template slot-scope="scope">
-          <span>{{ scope.row.low_age }}</span>
+          <span>{{ scope.row.detail.low_age }}</span>
         </template>
       </el-table-column>
       <el-table-column label="最大年龄">
         <template slot-scope="scope">
-          <span>{{ scope.row.high_age }}</span>
+          <span>{{ scope.row.detail.high_age }}</span>
         </template>
       </el-table-column>
       <el-table-column label="最低贷款额度">
         <template slot-scope="scope">
-          <span>{{ scope.row.low_loan_limit }}</span>
+          <span>{{ scope.row.detail.low_loan_limit }}</span>
         </template>
       </el-table-column>
       <el-table-column label="最高贷款额度">
         <template slot-scope="scope">
-          <span>{{ scope.row.high_loan_limit }}</span>
+          <span>{{ scope.row.detail.high_loan_limit }}</span>
         </template>
       </el-table-column>
       <el-table-column label="上班公积金">
         <template slot-scope="scope">
-          <span>{{ scope.row.work_accumulation_fund }}</span>
+          <span>{{ scope.row.detail.work_accumulation_fund }}</span>
         </template>
       </el-table-column>
       <el-table-column label="上班社保">
         <template slot-scope="scope">
-          <span>{{ scope.row.work_social_security }}</span>
+          <span>{{ scope.row.detail.work_social_security }}</span>
         </template>
       </el-table-column>
       <el-table-column label="上班打卡工资">
         <template slot-scope="scope">
-          <span>{{ scope.row.work_salary }}</span>
+          <span>{{ scope.row.detail.work_salary }}</span>
         </template>
       </el-table-column>
       <el-table-column label="公积金缴纳时长">
         <template slot-scope="scope">
-          <span>{{ scope.row.work_payment_period }}</span>
+          <span>{{ scope.row.detail.work_payment_period }}</span>
         </template>
       </el-table-column>
       <el-table-column label="上班公司性质">
         <template slot-scope="scope">
-          <span>{{ scope.row.work_company_nature }}</span>
+          <span>{{ scope.row.detail.work_company_nature }}</span>
         </template>
       </el-table-column>
       <el-table-column label="做生意营业执照">
         <template slot-scope="scope">
-          <span>{{ scope.row.business_license }}</span>
+          <span>{{ scope.row.detail.business_license }}</span>
         </template>
       </el-table-column>
       <el-table-column label="做生意职位">
         <template slot-scope="scope">
-          <span>{{ scope.row.business_position }}</span>
+          <span>{{ scope.row.detail.business_position }}</span>
         </template>
       </el-table-column>
       <el-table-column label="做生意经营时长">
         <template slot-scope="scope">
-          <span>{{ scope.row.business_hour }}</span>
+          <span>{{ scope.row.detail.business_hour }}</span>
         </template>
       </el-table-column>
       <el-table-column label="做生意经营地址">
         <template slot-scope="scope">
-          <span>{{ scope.row.business_address }}</span>
+          <span>{{ scope.row.detail.business_address }}</span>
         </template>
       </el-table-column>
       <el-table-column label="做生意经营行业">
         <template slot-scope="scope">
-          <span>{{ scope.row.business_industry }}</span>
+          <span>{{ scope.row.detail.business_industry }}</span>
         </template>
       </el-table-column>
       <el-table-column label="做生意流水">
         <template slot-scope="scope">
-          <span>{{ scope.row.business_flow }}</span>
+          <span>{{ scope.row.detail.business_flow }}</span>
         </template>
       </el-table-column>
       <el-table-column label="做生意税">
         <template slot-scope="scope">
-          <span>{{ scope.row.business_tax }}</span>
+          <span>{{ scope.row.detail.business_tax }}</span>
         </template>
       </el-table-column>
 
       <el-table-column label="房屋是否本地">
         <template slot-scope="scope">
-          <span>{{ scope.row.house_local }}</span>
+          <span>{{ scope.row.detail.house_local }}</span>
         </template>
       </el-table-column>
       <el-table-column label="房屋区域">
         <template slot-scope="scope">
-          <span>{{ scope.row.house_region }}</span>
+          <span>{{ scope.row.detail.house_region }}</span>
         </template>
       </el-table-column>
       <el-table-column label="房屋购买方式">
         <template slot-scope="scope">
-          <span>{{ scope.row.house_buy_method }}</span>
+          <span>{{ scope.row.detail.house_buy_method }}</span>
         </template>
       </el-table-column>
       <el-table-column label="房屋市值（单位为万）">
         <template slot-scope="scope">
-          <span>{{ scope.row.house_value }}</span>
+          <span>{{ scope.row.detail.house_value }}</span>
         </template>
       </el-table-column>
       <el-table-column label="房屋月供（单位为元）">
         <template slot-scope="scope">
-          <span>{{ scope.row.house_monthly_payment }}</span>
+          <span>{{ scope.row.detail.house_monthly_payment }}</span>
         </template>
       </el-table-column>
       <el-table-column label="房屋还款期数（单位为月）">
         <template slot-scope="scope">
-          <span>{{ scope.row.house_payment_period }}</span>
+          <span>{{ scope.row.detail.house_payment_period }}</span>
         </template>
       </el-table-column>
       <el-table-column label="房龄（单位为年）">
         <template slot-scope="scope">
-          <span>{{ scope.row.house_age }}</span>
+          <span>{{ scope.row.detail.house_age }}</span>
         </template>
       </el-table-column>
       <el-table-column label="房屋权利人数">
         <template slot-scope="scope">
-          <span>{{ scope.row.house_interest_num }}</span>
+          <span>{{ scope.row.detail.house_interest_num }}</span>
         </template>
       </el-table-column>
       <el-table-column label="房屋权利人年龄">
         <template slot-scope="scope">
-          <span>{{ scope.row.house_interest_age }}</span>
+          <span>{{ scope.row.detail.house_interest_age }}</span>
         </template>
       </el-table-column>
       <el-table-column label="房屋是否抵押(无/一押)">
         <template slot-scope="scope">
-          <span>{{ scope.row.house_is_mortgage }}</span>
+          <span>{{ scope.row.detail.house_is_mortgage }}</span>
         </template>
       </el-table-column>
 
       <el-table-column label="车是否本地">
         <template slot-scope="scope">
-          <span>{{ scope.row.car_local }}</span>
+          <span>{{ scope.row.detail.car_local }}</span>
         </template>
       </el-table-column>
       <el-table-column label="车牌照">
         <template slot-scope="scope">
-          <span>{{ scope.row.car_license }}</span>
+          <span>{{ scope.row.detail.car_license }}</span>
         </template>
       </el-table-column>
       <el-table-column label="车购买方式">
         <template slot-scope="scope">
-          <span>{{ scope.row.car_buy_method }}</span>
+          <span>{{ scope.row.detail.car_buy_method }}</span>
         </template>
       </el-table-column>
       <el-table-column label="车辆市值（单位为万）">
         <template slot-scope="scope">
-          <span>{{ scope.row.car_value }}</span>
+          <span>{{ scope.row.detail.car_value }}</span>
         </template>
       </el-table-column>
       <el-table-column label="车月供（单位为元）">
         <template slot-scope="scope">
-          <span>{{ scope.row.car_monthly_payment }}</span>
+          <span>{{ scope.row.detail.car_monthly_payment }}</span>
         </template>
       </el-table-column>
       <el-table-column label="车还款期数（单位为月）">
         <template slot-scope="scope">
-          <span>{{ scope.row.car_payment_period }}</span>
+          <span>{{ scope.row.detail.car_payment_period }}</span>
         </template>
       </el-table-column>
       <el-table-column label="车龄（单位为年）">
         <template slot-scope="scope">
-          <span>{{ scope.row.car_age }}</span>
+          <span>{{ scope.row.detail.car_age }}</span>
         </template>
       </el-table-column>
       <el-table-column label="里程数（单位为公里）">
         <template slot-scope="scope">
-          <span>{{ scope.row.car_use_km }}</span>
+          <span>{{ scope.row.detail.car_use_km }}</span>
         </template>
       </el-table-column>
 
       <el-table-column label="保单投保人">
         <template slot-scope="scope">
-          <span>{{ scope.row.policy_holder }}</span>
+          <span>{{ scope.row.detail.policy_holder }}</span>
         </template>
       </el-table-column>
       <el-table-column label="保单保险公司">
         <template slot-scope="scope">
-          <span>{{ scope.row.policy_insurance_company }}</span>
+          <span>{{ scope.row.detail.policy_insurance_company }}</span>
         </template>
       </el-table-column>
       <el-table-column label="保单缴费方式">
         <template slot-scope="scope">
-          <span>{{ scope.row.policy_payment_method }}</span>
+          <span>{{ scope.row.detail.policy_payment_method }}</span>
         </template>
       </el-table-column>
       <el-table-column label="保单年费（单位为元）">
         <template slot-scope="scope">
-          <span>{{ scope.row.policy_year_cost }}</span>
+          <span>{{ scope.row.detail.policy_year_cost }}</span>
         </template>
       </el-table-column>
       <el-table-column label="保单缴费时长（单位为月）">
         <template slot-scope="scope">
-          <span>{{ scope.row.policy_payemnt_period }}</span>
+          <span>{{ scope.row.detail.policy_payemnt_period }}</span>
         </template>
       </el-table-column>
 
       <el-table-column label="征信是否当前有逾期(是/否)">
         <template slot-scope="scope">
-          <span>{{ scope.row.credit_is_delay }}</span>
+          <span>{{ scope.row.detial.credit_is_delay }}</span>
         </template>
       </el-table-column>
       <el-table-column label="征信近3月逾期次">
         <template slot-scope="scope">
-          <span>{{ scope.row.credit_three_month_delay_times }}</span>
+          <span>{{ scope.row.detial.credit_three_month_delay_times }}</span>
         </template>
       </el-table-column>
       <el-table-column label="征信近6月逾期次">
         <template slot-scope="scope">
-          <span>{{ scope.row.credit_six_month_delay_times }}</span>
+          <span>{{ scope.row.detial.credit_six_month_delay_times }}</span>
         </template>
       </el-table-column>
       <el-table-column label="征信近12月逾期次">
         <template slot-scope="scope">
-          <span>{{ scope.row.credit_year_delay_times }}</span>
+          <span>{{ scope.row.detial.credit_year_delay_times }}</span>
         </template>
       </el-table-column>
       <el-table-column label="征信近24月逾期次">
         <template slot-scope="scope">
-          <span>{{ scope.row.credit_two_year_delay_times }}</span>
+          <span>{{ scope.row.detial.credit_two_year_delay_times }}</span>
         </template>
       </el-table-column>
       <el-table-column label="征信近3月连续逾期次">
         <template slot-scope="scope">
-          <span>{{ scope.row.credit_series_three_month_delay_times }}</span>
+          <span>{{ scope.row.detial.credit_series_three_month_delay_times }}</span>
         </template>
       </el-table-column>
       <el-table-column label="征信近6月连续逾期次">
         <template slot-scope="scope">
-          <span>{{ scope.row.credit_series_six_month_delay_times }}</span>
+          <span>{{ scope.row.detial.credit_series_six_month_delay_times }}</span>
         </template>
       </el-table-column>
       <el-table-column label="征信近12月连续逾期次">
         <template slot-scope="scope">
-          <span>{{ scope.row.credit_series_year_delay_times }}</span>
+          <span>{{ scope.row.detial.credit_series_year_delay_times }}</span>
         </template>
       </el-table-column>
       <el-table-column label="征信近24月连续逾期次">
         <template slot-scope="scope">
-          <span>{{ scope.row.credit_series_two_year_delay_times }}</span>
+          <span>{{ scope.row.detial.credit_series_two_year_delay_times }}</span>
         </template>
       </el-table-column>
 
       <el-table-column label="负债信用卡总额">
         <template slot-scope="scope">
-          <span>{{ scope.row.debt_credit_amount }}</span>
+          <span>{{ scope.row.detial.debt_credit_amount }}</span>
         </template>
       </el-table-column>
       <el-table-column label="负债已用额度">
         <template slot-scope="scope">
-          <span>{{ scope.row.debt_credit_used_amount }}</span>
+          <span>{{ scope.row.detial.debt_credit_used_amount }}</span>
         </template>
       </el-table-column>
       <el-table-column label="负债贷款笔数">
         <template slot-scope="scope">
-          <span>{{ scope.row.debt_loan_times }}</span>
+          <span>{{ scope.row.detial.debt_loan_times }}</span>
         </template>
       </el-table-column>
       <el-table-column label="负债贷款总额">
         <template slot-scope="scope">
-          <span>{{ scope.row.debt_loan_amount }}</span>
+          <span>{{ scope.row.detial.debt_loan_amount }}</span>
         </template>
       </el-table-column>
       <el-table-column label="负债网贷笔数">
         <template slot-scope="scope">
-          <span>{{ scope.row.debt_online_loan_times }}</span>
+          <span>{{ scope.row.detial.debt_online_loan_times }}</span>
         </template>
       </el-table-column>
       <el-table-column label="负债网贷总额">
         <template slot-scope="scope">
-          <span>{{ scope.row.debt_online_loan_amount }}</span>
+          <span>{{ scope.row.detial.debt_online_loan_amount }}</span>
         </template>
       </el-table-column>
       <el-table-column label="负债近3月查询">
         <template slot-scope="scope">
-          <span>{{ scope.row.debt_three_month_query_times }}</span>
+          <span>{{ scope.row.detial.debt_three_month_query_times }}</span>
         </template>
       </el-table-column>
       <el-table-column label="负债近6月查询">
         <template slot-scope="scope">
-          <span>{{ scope.row.debt_six_month_query_times }}</span>
+          <span>{{ scope.row.detial.debt_six_month_query_times }}</span>
         </template>
       </el-table-column>
 
@@ -1239,6 +1418,13 @@ export default {
         </template>
       </el-table-column>-->
     </el-table>
+    <el-pagination
+      @current-change="handleRefresh"
+      :current-page.sync="page"
+      :page-size="pageSize"
+      layout="total, prev, pager, next"
+      :total="total"
+    ></el-pagination>
   </div>
 </template>
 
