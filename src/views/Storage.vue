@@ -6,7 +6,7 @@ export default {
   props: {},
   data() {
     return {
-      labelWidth: '120px',
+      labelWidth: '130px',
       summaryForm: {
         id: '', //
         loanType: '', // 贷款类型
@@ -36,73 +36,76 @@ export default {
         highAge: 100, // 最大年龄
         lowLoanLimit: 10000, // 最低贷款额度
         highLoanLimit: 1000000, // 最高贷款额度
+        isKnow: true, // 家人是否知晓
         isBlankRoster: true, // 是否白户
         // 上班
-        hasWork: true,
-        workAccumulationFund: '', // 公积金
-        workSocialSecurity: '', // 社保
-        workSalary: '', // 打卡工资
-        workHour: '', // 工作时长
-        workCompanyNature: 1, // 公司性质（事业/国企/民营）
+        hasWork: false,
+        workAccumulationFund: 0, // 公积金
+        workSocialSecurity: 0, // 社保
+        workSalary: 0, // 打卡工资
+        workHour: 0, // 工作时长
+        workCompanyNature: [], // 公司性质（事业/国企/民营）
         // 做生意
-        hasBusiness: true,
+        hasBusiness: false,
         businessLicense: '', // 营业执照
         businessPosition: '', // 职位
         businessHour: '', // 经营时长
         businessAddress: '', // 经营地址
         businessIndustry: '', // 经营行业
-        businessFlow: '', // 流水
-        businessTax: '', // 税
+        businessFlow: 0, // 流水
+        businessTax: 0, // 税
         // 房
-        hasHouse: true,
+        hasHouse: false,
         houseLocal: true, // 是否本地（上海/外地）
         houseRegion: '', // 区域
         houseBuyMethod: 1, // 购买方式（全款/按揭）
-        houseValue: '', // 市值（单位；万）
-        houseMonthlyPayment: '', // 月供（单位为元）
-        housePaymentPeriod: '', // 还款期数（单位为月）
-        houseAge: '', // 房龄（单位为年）
-        houseInterestNum: '', // 权利人数
-        houseInterestAge: '', // 权利人年龄
+        houseValue: 0, // 市值（单位；万）
+        houseMonthlyPayment: 0, // 月供（单位为元）
+        housePaymentPeriod: 0, // 还款期数（单位为月）
+        houseAge: 0, // 房龄（单位为年）
+        houseInterestNum: 0, // 权利人数
+        houseInterestAge: 0, // 权利人年龄
         houseIsMortage: false, // 是否抵押（是/否）
         // 车
-        hasCar: true,
+        hasCar: false,
         carLocal: true, // 是否本地（是/否）
         carLicense: '', // 车牌
         carBuyMethod: 1, // 购买方式（全款/按揭）
-        carValue: '', // 价值（单位为万）
-        carMonthlyPayment: '', // 月供（单位为元）
-        carMonthlyPeriod: '', // 期数（单位为月）
-        carAge: '', // 车龄（单位为年）
-        carUseKm: '', // 里程数（单位为公里）
+        carValue: 0, // 价值（单位为万）
+        carMonthlyPayment: 0, // 月供（单位为元）
+        carMonthlyPeriod: 0, // 期数（单位为月）
+        carAge: 0, // 车龄（单位为年）
+        carUseKm: 0, // 里程数（单位为公里）
         // 保单
-        hasPolicy: true,
+        hasPolicy: false,
         policyHolder: '', // 投保人
         policyInsuranceCompany: '', // 保险公司
         policyPaymentMethod: 1, // 缴费方式（月/年）
-        policyYearCost: '', // 年费（单位为元）
-        policyPaymentPeriod: '', // 缴费时长（单位为月）
+        policyYearCost: 0, // 年费（单位为元）
+        policyPaymentPeriod: 0, // 缴费时长（单位为月）
         // 征信
-        hasCredit: true,
+        hasCredit: false,
         creditIsDelay: false, // 是否当前有逾期（是/否）
-        creditThreeMonthDelayTimes: '', // 近3月逾期次数
-        creditSixMonthDelayTimes: '', // 近6月逾期次数
-        creditYearDelayTimes: '', // 近1年逾期次数
-        creditTwoYearDelayTimes: '', // 近2年逾期次数
-        creditSeriesThreeMonthDelayTimes: '', // 近3月连续逾期次数
-        creditSeriesSixMonthDelayTimes: '', // 近6月连续逾期次数
-        creditSeriesYearDelayTimes: '', // 近1年连续逾期次数
-        creditSeriesTwoYearDelayTimes: '', // 近2年连续逾期次数
+        creditThreeMonthDelayTimes: 0, // 近3月逾期次数
+        creditSixMonthDelayTimes: 0, // 近6月逾期次数
+        creditYearDelayTimes: 0, // 近1年逾期次数
+        creditTwoYearDelayTimes: 0, // 近2年逾期次数
+        creditSeriesThreeMonthDelayTimes: 0, // 近3月连续逾期次数
+        creditSeriesSixMonthDelayTimes: 0, // 近6月连续逾期次数
+        creditSeriesYearDelayTimes: 0, // 近1年连续逾期次数
+        creditSeriesTwoYearDelayTimes: 0, // 近2年连续逾期次数
+        creditThreeMonthQueryTimes: 0, // 近3月查询
+        creditSixMonthQueryTimes: 0, // 近6月查询
+        creditYearQueryTimes: 0, // 近1年查询
+        creditTwoYearQueryTimes: 0, // 近2年查询
         // 负债
-        hasDebt: true,
-        debtCreditAmount: '', // 信用卡总额度
-        debtCreditUsedAmount: '', // 已用额度
-        debtLoanTimes: '', // 贷款次数
-        debtLoanAmount: '', // 贷款总额
-        debtOnlineLoanTimes: '', // 网贷次数
-        debtOnlineLoanAmount: '', // 网贷总额
-        debtThreeMonthQueryTimes: '', // 近3月查询
-        debtSixMonthQueryTimes: '', // 近6月查询
+        hasDebt: false,
+        debtCreditAmount: 0, // 信用卡总额度
+        debtCreditUsedAmount: 0, // 已用额度
+        debtLoanTimes: 0, // 贷款次数
+        debtLoanAmount: 0, // 贷款总额
+        debtOnlineLoanTimes: 0, // 网贷次数
+        debtOnlineLoanAmount: 0, // 网贷总额
       },
       detailFormRules: {
         // name: [
@@ -176,6 +179,11 @@ export default {
   beforeDestroy() {},
   destroyed() {},
   methods: {
+    handleNumberChange(form, key) {
+      if (this[form][key] === undefined) {
+        this[form][key] = 0
+      }
+    },
     hump2Underline(s) {
       return s.replace(/([A-Z])/g, '_$1').toLowerCase()
     },
@@ -245,7 +253,7 @@ export default {
         </el-col>
         <el-col :span="8">
           <el-form-item label="贷款机构名称" prop="loanName">
-            <el-input v-model="summaryForm.loanType" placeholder="请输入贷款机构名称"></el-input>
+            <el-input v-model="summaryForm.loanName" placeholder="请输入贷款机构名称"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -255,14 +263,15 @@ export default {
         </el-col>
         <el-col :span="8">
           <el-form-item label="年龄" prop="age">
-            <el-input-number
+            <!-- <el-input-number
               v-model="summaryForm.age"
               controls-position="right"
               :min="18"
               :max="100"
               style="width: 100%;"
               placeholder="请输入年龄"
-            ></el-input-number>
+            ></el-input-number>-->
+            <el-input v-model="summaryForm.age" placeholder="请输入年龄"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -288,6 +297,7 @@ export default {
               :min="0"
               style="width: 100%;"
               placeholder="请输入查询次数"
+              @change="handleNumberChange('summaryForm', 'queryTimes')"
             ></el-input-number>
           </el-form-item>
         </el-col>
@@ -368,6 +378,7 @@ export default {
               :max="100"
               style="width: 100%;"
               placeholder="请输入最小年龄"
+              @change="handleNumberChange('detailForm', 'lowAge')"
             ></el-input-number>
           </el-form-item>
         </el-col>
@@ -380,6 +391,7 @@ export default {
               :max="100"
               style="width: 100%;"
               placeholder="请输入最大年龄"
+              @change="handleNumberChange('detailForm', 'highAge')"
             ></el-input-number>
           </el-form-item>
         </el-col>
@@ -391,6 +403,7 @@ export default {
               :min="0"
               style="width: 100%;"
               placeholder="请输入最低贷款额度"
+              @change="handleNumberChange('detailForm', 'lowLoanLimit')"
             ></el-input-number>
           </el-form-item>
         </el-col>
@@ -402,12 +415,21 @@ export default {
               :min="0"
               style="width: 100%;"
               placeholder="请输入最高贷款额度"
+              @change="handleNumberChange('detailForm', 'highLoanLimit')"
             ></el-input-number>
           </el-form-item>
         </el-col>
         <el-col :span="8">
+          <el-form-item label="家人是否知晓" prop="isKnow">
+            <el-radio-group v-model="detailForm.isKnow" placeholder="请选择家人是否知晓">
+              <el-radio :label="true">是</el-radio>
+              <el-radio :label="false">否</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
           <el-form-item label="是否白户" prop="isBlankRoster">
-            <el-radio-group v-model="detailForm.isBlankRoster" placeholder="请选择公司性质">
+            <el-radio-group v-model="detailForm.isBlankRoster" placeholder="请选择是否白户">
               <el-radio :label="true">是</el-radio>
               <el-radio :label="false">否</el-radio>
             </el-radio-group>
@@ -429,6 +451,7 @@ export default {
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入公积金"
+                @change="handleNumberChange('detailForm', 'workAccumulationFund')"
               ></el-input-number>
             </el-form-item>
           </el-col>
@@ -440,6 +463,7 @@ export default {
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入社保"
+                @change="handleNumberChange('detailForm', 'workSocialSecurity')"
               ></el-input-number>
             </el-form-item>
           </el-col>
@@ -451,6 +475,7 @@ export default {
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入打卡工资"
+                @change="handleNumberChange('detailForm', 'workSalary')"
               ></el-input-number>
             </el-form-item>
           </el-col>
@@ -462,16 +487,18 @@ export default {
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入工作时长"
+                @change="handleNumberChange('detailForm', 'workHour')"
               ></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="公司性质" prop="workCompanyNature">
-              <el-radio-group v-model="detailForm.workCompanyNature" placeholder="请选择公司性质">
-                <el-radio :label="1">事业</el-radio>
-                <el-radio :label="2">国企</el-radio>
-                <el-radio :label="3">民营</el-radio>
-              </el-radio-group>
+              <el-checkbox-group v-model="detailForm.workCompanyNature" placeholder="请选择公司性质">
+                <el-checkbox :label="1">事业</el-checkbox>
+                <el-checkbox :label="2">国企</el-checkbox>
+                <el-checkbox :label="3">民营</el-checkbox>
+                <el-checkbox :label="4">其他</el-checkbox>
+              </el-checkbox-group>
             </el-form-item>
           </el-col>
         </el-row>
@@ -500,6 +527,7 @@ export default {
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
+                @change="handleNumberChange('detailForm', 'businessHour')"
               ></el-input-number>
             </el-form-item>
           </el-col>
@@ -511,6 +539,18 @@ export default {
           <el-col :span="8">
             <el-form-item label="经营行业" prop="businessIndustry">
               <el-input v-model="detailForm.businessIndustry"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="做生意流水（万）" prop="businessFlow">
+              <el-input v-model="detailForm.businessFlow"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="28">
+          <el-col :span="8">
+            <el-form-item label="做生意税" prop="businessTax">
+              <el-input v-model="detailForm.businessTax"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -536,13 +576,14 @@ export default {
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="市值（万）" prop="businessHour">
+            <el-form-item label="市值（万）" prop="houseValue">
               <el-input-number
-                v-model="detailForm.businessHour"
+                v-model="detailForm.houseValue"
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入市值（万）"
+                @change="handleNumberChange('detailForm', 'houseValue')"
               ></el-input-number>
             </el-form-item>
           </el-col>
@@ -563,6 +604,7 @@ export default {
                   :min="0"
                   style="width: 100%;"
                   placeholder="请输入月供（元）"
+                  @change="handleNumberChange('detailForm', 'houseMonthlyPayment')"
                 ></el-input-number>
               </el-form-item>
             </el-col>
@@ -574,6 +616,7 @@ export default {
                   :min="0"
                   style="width: 100%;"
                   placeholder="请输入还款期数（月）"
+                  @change="handleNumberChange('detailForm', 'housePaymentPeriod')"
                 ></el-input-number>
               </el-form-item>
             </el-col>
@@ -586,6 +629,7 @@ export default {
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入房龄（年）"
+                @change="handleNumberChange('detailForm', 'houseAge')"
               ></el-input-number>
             </el-form-item>
           </el-col>
@@ -597,6 +641,7 @@ export default {
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入权利人数"
+                @change="handleNumberChange('detailForm', 'houseInterestNum')"
               ></el-input-number>
             </el-form-item>
           </el-col>
@@ -608,6 +653,7 @@ export default {
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入权利人年龄"
+                @change="handleNumberChange('detailForm', 'houseInterestAge')"
               ></el-input-number>
             </el-form-item>
           </el-col>
@@ -649,6 +695,7 @@ export default {
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入价值（万）"
+                @change="handleNumberChange('detailForm', 'carValue')"
               ></el-input-number>
             </el-form-item>
           </el-col>
@@ -660,7 +707,7 @@ export default {
               </el-radio-group>
             </el-form-item>
           </el-col>
-          <template v-if="detailForm.houseBuyMethod === 2">
+          <template v-if="detailForm.carBuyMethod === 2">
             <el-col :span="8">
               <el-form-item label="月供（元）" prop="carMonthlyPayment">
                 <el-input-number
@@ -669,6 +716,7 @@ export default {
                   :min="0"
                   style="width: 100%;"
                   placeholder="请输入月供（元）"
+                  @change="handleNumberChange('detailForm', 'carMonthlyPayment')"
                 ></el-input-number>
               </el-form-item>
             </el-col>
@@ -680,6 +728,7 @@ export default {
                   :min="0"
                   style="width: 100%;"
                   placeholder="请输入还款期数（月）"
+                  @change="handleNumberChange('detailForm', 'carMonthlyPeriod')"
                 ></el-input-number>
               </el-form-item>
             </el-col>
@@ -692,6 +741,7 @@ export default {
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入车龄（年）"
+                @change="handleNumberChange('detailForm', 'carAge')"
               ></el-input-number>
             </el-form-item>
           </el-col>
@@ -703,6 +753,7 @@ export default {
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入里程数（公里）"
+                @change="handleNumberChange('detailForm', 'carUseKm')"
               ></el-input-number>
             </el-form-item>
           </el-col>
@@ -741,6 +792,7 @@ export default {
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入年费（元）"
+                @change="handleNumberChange('detailForm', 'policyYearCost')"
               ></el-input-number>
             </el-form-item>
           </el-col>
@@ -752,6 +804,7 @@ export default {
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入缴费时长（月）"
+                @change="handleNumberChange('detailForm', 'policyPaymentPeriod')"
               ></el-input-number>
             </el-form-item>
           </el-col>
@@ -771,7 +824,7 @@ export default {
           </el-radio-group>
         </el-form-item>
         <el-row :gutter="28">
-          <template v-if="detailForm.creditIsDelay">
+          <template>
             <el-col :span="8">
               <el-form-item label="近3月逾期次" prop="creditThreeMonthDelayTimes">
                 <el-input-number
@@ -780,6 +833,7 @@ export default {
                   :min="0"
                   style="width: 100%;"
                   placeholder="请输入近3月逾期次"
+                  @change="handleNumberChange('detailForm', 'creditThreeMonthDelayTimes')"
                 ></el-input-number>
               </el-form-item>
             </el-col>
@@ -791,6 +845,7 @@ export default {
                   :min="0"
                   style="width: 100%;"
                   placeholder="请输入近6月逾期次"
+                  @change="handleNumberChange('detailForm', 'creditSixMonthDelayTimes')"
                 ></el-input-number>
               </el-form-item>
             </el-col>
@@ -802,6 +857,7 @@ export default {
                   :min="0"
                   style="width: 100%;"
                   placeholder="请输入近1年逾期次"
+                  @change="handleNumberChange('detailForm', 'creditYearDelayTimes')"
                 ></el-input-number>
               </el-form-item>
             </el-col>
@@ -813,6 +869,7 @@ export default {
                   :min="0"
                   style="width: 100%;"
                   placeholder="请输入近2年逾期次"
+                  @change="handleNumberChange('detailForm', 'creditTwoYearDelayTimes')"
                 ></el-input-number>
               </el-form-item>
             </el-col>
@@ -824,6 +881,7 @@ export default {
                   :min="0"
                   style="width: 100%;"
                   placeholder="请输入近3月连续逾期次"
+                  @change="handleNumberChange('detailForm', 'creditSeriesThreeMonthDelayTimes')"
                 ></el-input-number>
               </el-form-item>
             </el-col>
@@ -834,7 +892,8 @@ export default {
                   controls-position="right"
                   :min="0"
                   style="width: 100%;"
-                  placeholder="请输入"
+                  placeholder="请输入近6月连续逾期次"
+                  @change="handleNumberChange('detailForm', 'creditSeriesSixMonthDelayTimes')"
                 ></el-input-number>
               </el-form-item>
             </el-col>
@@ -845,7 +904,8 @@ export default {
                   controls-position="right"
                   :min="0"
                   style="width: 100%;"
-                  placeholder="请输入"
+                  placeholder="请输入近1年连续逾期次"
+                  @change="handleNumberChange('detailForm', 'creditSeriesYearDelayTimes')"
                 ></el-input-number>
               </el-form-item>
             </el-col>
@@ -856,7 +916,56 @@ export default {
                   controls-position="right"
                   :min="0"
                   style="width: 100%;"
-                  placeholder="请输入"
+                  placeholder="请输入近2年连续逾期次"
+                  @change="handleNumberChange('detailForm', 'creditSeriesTwoYearDelayTimes')"
+                ></el-input-number>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="近3月查询" prop="creditThreeMonthQueryTimes">
+                <el-input-number
+                  v-model="detailForm.creditThreeMonthQueryTimes"
+                  controls-position="right"
+                  :min="0"
+                  style="width: 100%;"
+                  placeholder="请输入近3月查询"
+                  @change="handleNumberChange('detailForm', 'creditThreeMonthQueryTimes')"
+                ></el-input-number>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="近6月查询" prop="creditSixMonthQueryTimes">
+                <el-input-number
+                  v-model="detailForm.creditSixMonthQueryTimes"
+                  controls-position="right"
+                  :min="0"
+                  style="width: 100%;"
+                  placeholder="请输入近6月查询"
+                  @change="handleNumberChange('detailForm', 'creditSixMonthQueryTimes')"
+                ></el-input-number>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="近1年查询" prop="creditYearQueryTimes">
+                <el-input-number
+                  v-model="detailForm.creditYearQueryTimes"
+                  controls-position="right"
+                  :min="0"
+                  style="width: 100%;"
+                  placeholder="请输入近1年查询"
+                  @change="handleNumberChange('detailForm', 'creditYearQueryTimes')"
+                ></el-input-number>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="近2年查询" prop="creditTwoYearQueryTimes">
+                <el-input-number
+                  v-model="detailForm.creditTwoYearQueryTimes"
+                  controls-position="right"
+                  :min="0"
+                  style="width: 100%;"
+                  placeholder="请输入近2年查询"
+                  @change="handleNumberChange('detailForm', 'creditTwoYearQueryTimes')"
                 ></el-input-number>
               </el-form-item>
             </el-col>
@@ -879,6 +988,7 @@ export default {
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入信用卡总额度"
+                @change="handleNumberChange('detailForm', 'debtCreditAmount')"
               ></el-input-number>
             </el-form-item>
           </el-col>
@@ -890,6 +1000,7 @@ export default {
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入已用额度"
+                @change="handleNumberChange('detailForm', 'debtCreditUsedAmount')"
               ></el-input-number>
             </el-form-item>
           </el-col>
@@ -901,6 +1012,7 @@ export default {
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入贷款次数"
+                @change="handleNumberChange('detailForm', 'debtLoanTimes')"
               ></el-input-number>
             </el-form-item>
           </el-col>
@@ -912,6 +1024,7 @@ export default {
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入贷款总额"
+                @change="handleNumberChange('detailForm', 'debtLoanAmount')"
               ></el-input-number>
             </el-form-item>
           </el-col>
@@ -923,6 +1036,7 @@ export default {
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入网贷次数"
+                @change="handleNumberChange('detailForm', 'debtOnlineLoanTimes')"
               ></el-input-number>
             </el-form-item>
           </el-col>
@@ -934,28 +1048,7 @@ export default {
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入网贷总额"
-              ></el-input-number>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="近3月查询" prop="debtThreeMonthQueryTimes">
-              <el-input-number
-                v-model="detailForm.debtThreeMonthQueryTimes"
-                controls-position="right"
-                :min="0"
-                style="width: 100%;"
-                placeholder="请输入近3月查询"
-              ></el-input-number>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="近6月查询" prop="debtSixMonthQueryTimes">
-              <el-input-number
-                v-model="detailForm.debtSixMonthQueryTimes"
-                controls-position="right"
-                :min="0"
-                style="width: 100%;"
-                placeholder="请输入近6月查询"
+                @change="handleNumberChange('detailForm', 'debtOnlineLoanAmount')"
               ></el-input-number>
             </el-form-item>
           </el-col>
@@ -1315,6 +1408,26 @@ export default {
           <span>{{ scope.row.detial.credit_series_two_year_delay_times }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="征信近3月查询">
+        <template slot-scope="scope">
+          <span>{{ scope.row.detial.credit_three_month_query_times }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="征信近6月查询">
+        <template slot-scope="scope">
+          <span>{{ scope.row.detial.credit_six_month_query_times }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="征信近1年查询">
+        <template slot-scope="scope">
+          <span>{{ scope.row.detial.credit_year_query_times }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="征信近2年查询">
+        <template slot-scope="scope">
+          <span>{{ scope.row.detial.credit_two_year_query_times }}</span>
+        </template>
+      </el-table-column>
 
       <el-table-column label="负债信用卡总额">
         <template slot-scope="scope">
@@ -1344,16 +1457,6 @@ export default {
       <el-table-column label="负债网贷总额">
         <template slot-scope="scope">
           <span>{{ scope.row.detial.debt_online_loan_amount }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="负债近3月查询">
-        <template slot-scope="scope">
-          <span>{{ scope.row.detial.debt_three_month_query_times }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="负债近6月查询">
-        <template slot-scope="scope">
-          <span>{{ scope.row.detial.debt_six_month_query_times }}</span>
         </template>
       </el-table-column>
 
