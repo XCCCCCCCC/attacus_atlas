@@ -6,7 +6,7 @@ export default {
   props: {},
   data() {
     return {
-      labelWidth: '130px',
+      labelWidth: '140px',
       queryForm: {
         id: '',
         date: new Date(),
@@ -46,7 +46,7 @@ export default {
         houseMonthlyPayment: 0, // 月供（单位为元）
         housePaymentPeriod: 0, // 还款期数（单位为月）
         houseAge: 0, // 房龄（单位为年）
-        houseInterestNum: 0, // 权利人数
+        houseInterestNum: 1, // 权利人数
         houseInterestAge: 0, // 权利人年龄
         houseIsMortage: false, // 是否抵押（是/否）
         // 车
@@ -266,7 +266,7 @@ export default {
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="年龄" prop="age">
+          <el-form-item label="年龄（年）" prop="age">
             <el-input-number
               v-model="queryForm.age"
               controls-position="right"
@@ -308,7 +308,7 @@ export default {
       <template v-if="queryForm.hasWork">
         <el-row :gutter="28">
           <el-col :span="8">
-            <el-form-item label="公积金" prop="workAccumulationFund">
+            <el-form-item label="公积金（元）" prop="workAccumulationFund">
               <el-input-number
                 v-model="queryForm.workAccumulationFund"
                 controls-position="right"
@@ -320,7 +320,7 @@ export default {
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="社保" prop="workSocialSecurity">
+            <el-form-item label="社保（元）" prop="workSocialSecurity">
               <el-input-number
                 v-model="queryForm.workSocialSecurity"
                 controls-position="right"
@@ -332,7 +332,7 @@ export default {
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="打卡工资" prop="workSalary">
+            <el-form-item label="打卡工资（元）" prop="workSalary">
               <el-input-number
                 v-model="queryForm.workSalary"
                 controls-position="right"
@@ -344,7 +344,7 @@ export default {
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="工作时长" prop="workHour">
+            <el-form-item label="工作时长（月）" prop="workHour">
               <el-input-number
                 v-model="queryForm.workHour"
                 controls-position="right"
@@ -355,7 +355,7 @@ export default {
               ></el-input-number>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="16">
             <el-form-item label="公司性质" prop="workCompanyNature">
               <el-checkbox-group v-model="queryForm.workCompanyNature" placeholder="请选择公司性质">
                 <el-checkbox :label="1">事业</el-checkbox>
@@ -385,7 +385,7 @@ export default {
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="经营时长" prop="businessHour">
+            <el-form-item label="经营时长（月）" prop="businessHour">
               <el-input-number
                 v-model="queryForm.businessHour"
                 controls-position="right"
@@ -406,14 +406,14 @@ export default {
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="做生意流水（万）" prop="businessFlow">
+            <el-form-item label="做生意流水（元）" prop="businessFlow">
               <el-input v-model="queryForm.businessFlow"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="28">
           <el-col :span="8">
-            <el-form-item label="做生意税" prop="businessTax">
+            <el-form-item label="做生意税（元）" prop="businessTax">
               <el-input v-model="queryForm.businessTax"></el-input>
             </el-form-item>
           </el-col>
@@ -440,14 +440,14 @@ export default {
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="市值（万）" prop="businessHour">
+            <el-form-item label="市值（万）" prop="houseValue">
               <el-input-number
-                v-model="queryForm.businessHour"
+                v-model="queryForm.houseValue"
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入市值（万）"
-                @change="handleNumberChange('queryForm', 'businessHour')"
+                @change="handleNumberChange('queryForm', 'houseValue')"
               ></el-input-number>
             </el-form-item>
           </el-col>
@@ -498,7 +498,7 @@ export default {
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="权利人数" prop="houseInterestNum">
+            <el-form-item label="权利人数（个）" prop="houseInterestNum">
               <el-input-number
                 v-model="queryForm.houseInterestNum"
                 controls-position="right"
@@ -510,7 +510,7 @@ export default {
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="权利人年龄" prop="houseInterestAge">
+            <el-form-item label="权利人年龄（年）" prop="houseInterestAge">
               <el-input-number
                 v-model="queryForm.houseInterestAge"
                 controls-position="right"
@@ -558,7 +558,7 @@ export default {
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
-                placeholder="请输入价值（万）"
+                placeholder="请输入价值"
                 @change="handleNumberChange('queryForm', 'carValue')"
               ></el-input-number>
             </el-form-item>
@@ -579,7 +579,7 @@ export default {
                   controls-position="right"
                   :min="0"
                   style="width: 100%;"
-                  placeholder="请输入月供（元）"
+                  placeholder="请输入月供"
                   @change="handleNumberChange('queryForm', 'carMonthlyPayment')"
                 ></el-input-number>
               </el-form-item>
@@ -591,7 +591,7 @@ export default {
                   controls-position="right"
                   :min="0"
                   style="width: 100%;"
-                  placeholder="请输入还款期数（月）"
+                  placeholder="请输入还款期数"
                   @change="handleNumberChange('queryForm', 'carMonthlyPeriod')"
                 ></el-input-number>
               </el-form-item>
@@ -604,7 +604,7 @@ export default {
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
-                placeholder="请输入车龄（年）"
+                placeholder="请输入车龄"
                 @change="handleNumberChange('queryForm', 'carAge')"
               ></el-input-number>
             </el-form-item>
@@ -616,7 +616,7 @@ export default {
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
-                placeholder="请输入里程数（公里）"
+                placeholder="请输入里程数"
                 @change="handleNumberChange('queryForm', 'carUseKm')"
               ></el-input-number>
             </el-form-item>
@@ -648,6 +648,8 @@ export default {
               </el-radio-group>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row :gutter="28">
           <el-col :span="8">
             <el-form-item label="年费（元）" prop="policyYearCost">
               <el-input-number
@@ -655,7 +657,7 @@ export default {
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
-                placeholder="请输入年费（元）"
+                placeholder="请输入年费"
                 @change="handleNumberChange('queryForm', 'policyYearCost')"
               ></el-input-number>
             </el-form-item>
@@ -667,7 +669,7 @@ export default {
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
-                placeholder="请输入缴费时长（月）"
+                placeholder="请输入缴费时长"
                 @change="handleNumberChange('queryForm', 'policyPaymentPeriod')"
               ></el-input-number>
             </el-form-item>
@@ -845,7 +847,7 @@ export default {
       <template v-if="queryForm.hasDebt">
         <el-row :gutter="28">
           <el-col :span="8">
-            <el-form-item label="信用卡总额度" prop="debtCreditAmount">
+            <el-form-item label="信用卡总额度（万）" prop="debtCreditAmount">
               <el-input-number
                 v-model="queryForm.debtCreditAmount"
                 controls-position="right"
@@ -857,7 +859,7 @@ export default {
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="已用额度" prop="debtCreditUsedAmount">
+            <el-form-item label="已用额度（万）" prop="debtCreditUsedAmount">
               <el-input-number
                 v-model="queryForm.debtCreditUsedAmount"
                 controls-position="right"
@@ -881,7 +883,7 @@ export default {
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="贷款总额" prop="debtLoanAmount">
+            <el-form-item label="贷款总额（万）" prop="debtLoanAmount">
               <el-input-number
                 v-model="queryForm.debtLoanAmount"
                 controls-position="right"
@@ -905,7 +907,7 @@ export default {
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="网贷总额" prop="debtOnlineLoanAmount">
+            <el-form-item label="网贷总额（万）" prop="debtOnlineLoanAmount">
               <el-input-number
                 v-model="queryForm.debtOnlineLoanAmount"
                 controls-position="right"
@@ -948,7 +950,7 @@ export default {
       </el-form-item>
     </el-form>
     <el-table :data="resultData" style="width: 100%,">
-      <el-table-column label="序号">
+      <!-- <el-table-column label="序号">
         <template slot-scope="scope">
           <span>{{ scope.row.id }}</span>
         </template>
@@ -1036,6 +1038,11 @@ export default {
       <el-table-column label="负债算法">
         <template slot-scope="scope">
           <span>{{ scope.row.debt_algorithm }}</span>
+        </template>
+      </el-table-column>-->
+      <el-table-column label="贷款机构信息" :min-width="200">
+        <template slot-scope="scope">
+          <span>{{ scope.row.org_info }}</span>
         </template>
       </el-table-column>
     </el-table>

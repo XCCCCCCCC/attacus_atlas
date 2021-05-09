@@ -6,26 +6,27 @@ export default {
   props: {},
   data() {
     return {
-      labelWidth: '130px',
+      labelWidth: '140px',
       summaryForm: {
-        id: '', //
-        loanType: '', // 贷款类型
-        loanName: '', // 贷款机构名称
-        nation: '', // 国籍
-        age: 18, // 年龄
-        loanLimit: '', // 贷款额度
-        loanInterest: '', // 贷款利息
-        repaymentMethod: '', // 还款方式
-        queryTimes: 0, // 查询次数
-        residence: '', // 居住地
-        repaymentTerm: '', // 期限
-        material: '', // 需要材料
-        creditRequirements: '', // 征信要求
-        prepayment: '', // 提前还款
-        incomingRequirements: '', // 进件要求
-        applicationProcess: '', // 申请流程
-        quotaAlgorithm: '', // 额度算法
-        debtAlgorithm: '', // 负债算法
+        // id: '', //
+        // loanType: '', // 贷款类型
+        // loanName: '', // 贷款机构名称
+        // nation: '', // 国籍
+        // age: 18, // 年龄
+        // loanLimit: '', // 贷款额度
+        // loanInterest: '', // 贷款利息
+        // repaymentMethod: '', // 还款方式
+        // queryTimes: 0, // 查询次数
+        // residence: '', // 居住地
+        // repaymentTerm: '', // 期限
+        // material: '', // 需要材料
+        // creditRequirements: '', // 征信要求
+        // prepayment: '', // 提前还款
+        // incomingRequirements: '', // 进件要求
+        // applicationProcess: '', // 申请流程
+        // quotaAlgorithm: '', // 额度算法
+        // debtAlgorithm: '', // 负债算法
+        orgInfo: '', // 摘要
       },
       summaryFormRules: {},
       detailForm: {
@@ -60,10 +61,10 @@ export default {
         houseRegion: '', // 区域
         houseBuyMethod: 1, // 购买方式（全款/按揭）
         houseValue: 0, // 市值（单位；万）
-        houseMonthlyPayment: 0, // 月供（单位为元）
-        housePaymentPeriod: 0, // 还款期数（单位为月）
-        houseAge: 0, // 房龄（单位为年）
-        houseInterestNum: 0, // 权利人数
+        houseMonthlyPayment: 0, // 月供（元）
+        housePaymentPeriod: 0, // 还款期数（月）
+        houseAge: 0, // 房龄（年）
+        houseInterestNum: 1, // 权利人数
         houseInterestAge: 0, // 权利人年龄
         houseIsMortage: false, // 是否抵押（是/否）
         // 车
@@ -71,18 +72,18 @@ export default {
         carLocal: true, // 是否本地（是/否）
         carLicense: '', // 车牌
         carBuyMethod: 1, // 购买方式（全款/按揭）
-        carValue: 0, // 价值（单位为万）
-        carMonthlyPayment: 0, // 月供（单位为元）
-        carMonthlyPeriod: 0, // 期数（单位为月）
-        carAge: 0, // 车龄（单位为年）
-        carUseKm: 0, // 里程数（单位为公里）
+        carValue: 0, // 价值（万）
+        carMonthlyPayment: 0, // 月供（元）
+        carMonthlyPeriod: 0, // 期数（月）
+        carAge: 0, // 车龄（年）
+        carUseKm: 0, // 里程数（公里）
         // 保单
         hasPolicy: false,
         policyHolder: '', // 投保人
         policyInsuranceCompany: '', // 保险公司
         policyPaymentMethod: 1, // 缴费方式（月/年）
-        policyYearCost: 0, // 年费（单位为元）
-        policyPaymentPeriod: 0, // 缴费时长（单位为月）
+        policyYearCost: 0, // 年费（元）
+        policyPaymentPeriod: 0, // 缴费时长（月）
         // 征信
         hasCredit: false,
         creditIsDelay: false, // 是否当前有逾期（是/否）
@@ -246,7 +247,12 @@ export default {
       <!-- 概要信息 -->
       <el-divider>概要信息</el-divider>
       <el-row :gutter="28">
-        <el-col :span="8">
+        <el-col :span="24">
+          <el-form-item label="贷款机构信息" prop="orgInfo">
+            <el-input type="textarea" :rows="8" v-model="summaryForm.orgInfo" placeholder="请输入地址"></el-input>
+          </el-form-item>
+        </el-col>
+        <!-- <el-col :span="8">
           <el-form-item label="贷款类型" prop="loanType">
             <el-input v-model="summaryForm.loanType" placeholder="请输入贷款类型"></el-input>
           </el-form-item>
@@ -263,14 +269,6 @@ export default {
         </el-col>
         <el-col :span="8">
           <el-form-item label="年龄" prop="age">
-            <!-- <el-input-number
-              v-model="summaryForm.age"
-              controls-position="right"
-              :min="18"
-              :max="100"
-              style="width: 100%;"
-              placeholder="请输入年龄"
-            ></el-input-number>-->
             <el-input v-model="summaryForm.age" placeholder="请输入年龄"></el-input>
           </el-form-item>
         </el-col>
@@ -345,7 +343,7 @@ export default {
           <el-form-item label="负债算法" prop="debtAlgorithm">
             <el-input v-model="summaryForm.debtAlgorithm" placeholder="请输入负债算法"></el-input>
           </el-form-item>
-        </el-col>
+        </el-col>-->
       </el-row>
     </el-form>
     <el-form
@@ -370,7 +368,7 @@ export default {
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="最小年龄" prop="lowAge">
+          <el-form-item label="最小年龄（年）" prop="lowAge">
             <el-input-number
               v-model="detailForm.lowAge"
               controls-position="right"
@@ -383,7 +381,7 @@ export default {
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="最大年龄" prop="highAge">
+          <el-form-item label="最大年龄（年）" prop="highAge">
             <el-input-number
               v-model="detailForm.highAge"
               controls-position="right"
@@ -396,7 +394,7 @@ export default {
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="最低贷款额度" prop="lowLoanLimit">
+          <el-form-item label="最低贷款额度（万）" prop="lowLoanLimit">
             <el-input-number
               v-model="detailForm.lowLoanLimit"
               controls-position="right"
@@ -408,7 +406,7 @@ export default {
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="最高贷款额度" prop="highLoanLimit">
+          <el-form-item label="最高贷款额度（万）" prop="highLoanLimit">
             <el-input-number
               v-model="detailForm.highLoanLimit"
               controls-position="right"
@@ -444,7 +442,7 @@ export default {
       <template v-if="detailForm.hasWork">
         <el-row :gutter="28">
           <el-col :span="8">
-            <el-form-item label="公积金" prop="workAccumulationFund">
+            <el-form-item label="公积金（元）" prop="workAccumulationFund">
               <el-input-number
                 v-model="detailForm.workAccumulationFund"
                 controls-position="right"
@@ -456,7 +454,7 @@ export default {
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="社保" prop="workSocialSecurity">
+            <el-form-item label="社保（元）" prop="workSocialSecurity">
               <el-input-number
                 v-model="detailForm.workSocialSecurity"
                 controls-position="right"
@@ -468,7 +466,7 @@ export default {
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="打卡工资" prop="workSalary">
+            <el-form-item label="打卡工资（元）" prop="workSalary">
               <el-input-number
                 v-model="detailForm.workSalary"
                 controls-position="right"
@@ -480,7 +478,7 @@ export default {
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="工作时长" prop="workHour">
+            <el-form-item label="工作时长（月）" prop="workHour">
               <el-input-number
                 v-model="detailForm.workHour"
                 controls-position="right"
@@ -491,7 +489,7 @@ export default {
               ></el-input-number>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="16">
             <el-form-item label="公司性质" prop="workCompanyNature">
               <el-checkbox-group v-model="detailForm.workCompanyNature" placeholder="请选择公司性质">
                 <el-checkbox :label="1">事业</el-checkbox>
@@ -521,7 +519,7 @@ export default {
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="经营时长" prop="businessHour">
+            <el-form-item label="经营时长（月）" prop="businessHour">
               <el-input-number
                 v-model="detailForm.businessHour"
                 controls-position="right"
@@ -542,14 +540,14 @@ export default {
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="做生意流水（万）" prop="businessFlow">
+            <el-form-item label="做生意流水（元）" prop="businessFlow">
               <el-input v-model="detailForm.businessFlow"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="28">
           <el-col :span="8">
-            <el-form-item label="做生意税" prop="businessTax">
+            <el-form-item label="做生意税（元）" prop="businessTax">
               <el-input v-model="detailForm.businessTax"></el-input>
             </el-form-item>
           </el-col>
@@ -582,7 +580,7 @@ export default {
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
-                placeholder="请输入市值（万）"
+                placeholder="请输入市值"
                 @change="handleNumberChange('detailForm', 'houseValue')"
               ></el-input-number>
             </el-form-item>
@@ -603,7 +601,7 @@ export default {
                   controls-position="right"
                   :min="0"
                   style="width: 100%;"
-                  placeholder="请输入月供（元）"
+                  placeholder="请输入月供"
                   @change="handleNumberChange('detailForm', 'houseMonthlyPayment')"
                 ></el-input-number>
               </el-form-item>
@@ -615,7 +613,7 @@ export default {
                   controls-position="right"
                   :min="0"
                   style="width: 100%;"
-                  placeholder="请输入还款期数（月）"
+                  placeholder="请输入还款期数"
                   @change="handleNumberChange('detailForm', 'housePaymentPeriod')"
                 ></el-input-number>
               </el-form-item>
@@ -628,13 +626,13 @@ export default {
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
-                placeholder="请输入房龄（年）"
+                placeholder="请输入房龄"
                 @change="handleNumberChange('detailForm', 'houseAge')"
               ></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="权利人数" prop="houseInterestNum">
+            <el-form-item label="权利人数（个）" prop="houseInterestNum">
               <el-input-number
                 v-model="detailForm.houseInterestNum"
                 controls-position="right"
@@ -646,7 +644,7 @@ export default {
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="权利人年龄" prop="houseInterestAge">
+            <el-form-item label="权利人年龄（年）" prop="houseInterestAge">
               <el-input-number
                 v-model="detailForm.houseInterestAge"
                 controls-position="right"
@@ -694,7 +692,7 @@ export default {
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
-                placeholder="请输入价值（万）"
+                placeholder="请输入价值"
                 @change="handleNumberChange('detailForm', 'carValue')"
               ></el-input-number>
             </el-form-item>
@@ -715,7 +713,7 @@ export default {
                   controls-position="right"
                   :min="0"
                   style="width: 100%;"
-                  placeholder="请输入月供（元）"
+                  placeholder="请输入月供"
                   @change="handleNumberChange('detailForm', 'carMonthlyPayment')"
                 ></el-input-number>
               </el-form-item>
@@ -727,7 +725,7 @@ export default {
                   controls-position="right"
                   :min="0"
                   style="width: 100%;"
-                  placeholder="请输入还款期数（月）"
+                  placeholder="请输入还款期数"
                   @change="handleNumberChange('detailForm', 'carMonthlyPeriod')"
                 ></el-input-number>
               </el-form-item>
@@ -740,7 +738,7 @@ export default {
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
-                placeholder="请输入车龄（年）"
+                placeholder="请输入车龄"
                 @change="handleNumberChange('detailForm', 'carAge')"
               ></el-input-number>
             </el-form-item>
@@ -752,7 +750,7 @@ export default {
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
-                placeholder="请输入里程数（公里）"
+                placeholder="请输入里程数"
                 @change="handleNumberChange('detailForm', 'carUseKm')"
               ></el-input-number>
             </el-form-item>
@@ -784,6 +782,8 @@ export default {
               </el-radio-group>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row :gutter="28">
           <el-col :span="8">
             <el-form-item label="年费（元）" prop="policyYearCost">
               <el-input-number
@@ -791,7 +791,7 @@ export default {
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
-                placeholder="请输入年费（元）"
+                placeholder="请输入年费"
                 @change="handleNumberChange('detailForm', 'policyYearCost')"
               ></el-input-number>
             </el-form-item>
@@ -803,7 +803,7 @@ export default {
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
-                placeholder="请输入缴费时长（月）"
+                placeholder="请输入缴费时长"
                 @change="handleNumberChange('detailForm', 'policyPaymentPeriod')"
               ></el-input-number>
             </el-form-item>
@@ -981,7 +981,7 @@ export default {
       <template v-if="detailForm.hasDebt">
         <el-row :gutter="28">
           <el-col :span="8">
-            <el-form-item label="信用卡总额度" prop="debtCreditAmount">
+            <el-form-item label="信用卡总额度（万）" prop="debtCreditAmount">
               <el-input-number
                 v-model="detailForm.debtCreditAmount"
                 controls-position="right"
@@ -993,7 +993,7 @@ export default {
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="已用额度" prop="debtCreditUsedAmount">
+            <el-form-item label="已用额度（万）" prop="debtCreditUsedAmount">
               <el-input-number
                 v-model="detailForm.debtCreditUsedAmount"
                 controls-position="right"
@@ -1017,7 +1017,7 @@ export default {
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="贷款总额" prop="debtLoanAmount">
+            <el-form-item label="贷款总额（万）" prop="debtLoanAmount">
               <el-input-number
                 v-model="detailForm.debtLoanAmount"
                 controls-position="right"
@@ -1041,7 +1041,7 @@ export default {
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="网贷总额" prop="debtOnlineLoanAmount">
+            <el-form-item label="网贷总额（万）" prop="debtOnlineLoanAmount">
               <el-input-number
                 v-model="detailForm.debtOnlineLoanAmount"
                 controls-position="right"
@@ -1059,7 +1059,7 @@ export default {
       </el-form-item>
     </el-form>
     <el-table :data="resultData" style="width: 100%,">
-      <el-table-column label="序号">
+      <!-- <el-table-column label="序号">
         <template slot-scope="scope">
           <span>{{ scope.row.summary.id }}</span>
         </template>
@@ -1148,22 +1148,27 @@ export default {
         <template slot-scope="scope">
           <span>{{ scope.row.summary.debt_algorithm }}</span>
         </template>
-      </el-table-column>
-      <!-- <el-table-column label="贷款类型">
-        <template slot-scope="scope">
-          <span>{{ scope.row.loan_type }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="贷款机构名称">
-        <template slot-scope="scope">
-          <span>{{ scope.row.loan_name }}</span>
-        </template>
       </el-table-column>-->
       <!-- <el-table-column label="国籍">
         <template slot-scope="scope">
           <span>{{ scope.row.nation }}</span>
         </template>
       </el-table-column>-->
+      <el-table-column label="贷款机构信息" :min-width="200">
+        <template slot-scope="scope">
+          <span>{{ scope.row.summary.org_info }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="贷款类型">
+        <template slot-scope="scope">
+          <span>{{ scope.row.detail.loan_type }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="贷款机构名称">
+        <template slot-scope="scope">
+          <span>{{ scope.row.detail.loan_name }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="最小年龄">
         <template slot-scope="scope">
           <span>{{ scope.row.detail.low_age }}</span>
@@ -1260,22 +1265,22 @@ export default {
           <span>{{ scope.row.detail.house_buy_method }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="房屋市值（单位为万）">
+      <el-table-column label="房屋市值（万）">
         <template slot-scope="scope">
           <span>{{ scope.row.detail.house_value }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="房屋月供（单位为元）">
+      <el-table-column label="房屋月供（元）">
         <template slot-scope="scope">
           <span>{{ scope.row.detail.house_monthly_payment }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="房屋还款期数（单位为月）">
+      <el-table-column label="房屋还款期数（月）">
         <template slot-scope="scope">
           <span>{{ scope.row.detail.house_payment_period }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="房龄（单位为年）">
+      <el-table-column label="房龄（年）">
         <template slot-scope="scope">
           <span>{{ scope.row.detail.house_age }}</span>
         </template>
@@ -1311,27 +1316,27 @@ export default {
           <span>{{ scope.row.detail.car_buy_method }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="车辆市值（单位为万）">
+      <el-table-column label="车辆市值（万）">
         <template slot-scope="scope">
           <span>{{ scope.row.detail.car_value }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="车月供（单位为元）">
+      <el-table-column label="车月供（元）">
         <template slot-scope="scope">
           <span>{{ scope.row.detail.car_monthly_payment }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="车还款期数（单位为月）">
+      <el-table-column label="车还款期数（月）">
         <template slot-scope="scope">
           <span>{{ scope.row.detail.car_payment_period }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="车龄（单位为年）">
+      <el-table-column label="车龄（年）">
         <template slot-scope="scope">
           <span>{{ scope.row.detail.car_age }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="里程数（单位为公里）">
+      <el-table-column label="里程数（公里）">
         <template slot-scope="scope">
           <span>{{ scope.row.detail.car_use_km }}</span>
         </template>
@@ -1352,12 +1357,12 @@ export default {
           <span>{{ scope.row.detail.policy_payment_method }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="保单年费（单位为元）">
+      <el-table-column label="保单年费（元）">
         <template slot-scope="scope">
           <span>{{ scope.row.detail.policy_year_cost }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="保单缴费时长（单位为月）">
+      <el-table-column label="保单缴费时长（月）">
         <template slot-scope="scope">
           <span>{{ scope.row.detail.policy_payemnt_period }}</span>
         </template>
