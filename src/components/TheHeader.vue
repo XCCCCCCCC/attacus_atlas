@@ -23,7 +23,19 @@ export default {
 </script>
 
 <template>
-  <div id="the-header">{{$route.meta.title}}</div>
+  <div id="the-header">
+    <el-menu
+      :default-active="$route.name"
+      mode="horizontal"
+      background-color="#545c64"
+      text-color="#fff"
+      active-text-color="#ffd04b"
+      router
+    >
+      <el-menu-item index="query">查询</el-menu-item>
+      <el-menu-item index="storage">存储</el-menu-item>
+    </el-menu>
+  </div>
 </template>
 
 <style lang="scss">

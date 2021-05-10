@@ -6,6 +6,13 @@ export function add(data) {
     data,
   })
 }
+export function remove(params) {
+  return req({
+    url: '/delete',
+    method: 'get',
+    params,
+  })
+}
 export function list(params) {
   return req({
     url: '/list',

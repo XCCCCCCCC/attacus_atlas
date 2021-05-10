@@ -34,6 +34,12 @@ import {
   Table,
   TableColumn,
   Pagination,
+  Menu,
+  Submenu,
+  MenuItem,
+  MenuItemGroup,
+  Popover,
+  Popconfirm,
 } from 'element-ui'
 
 Vue.use(Row)
@@ -66,6 +72,12 @@ Vue.use(Divider)
 Vue.use(Table)
 Vue.use(TableColumn)
 Vue.use(Pagination)
+Vue.use(Menu)
+Vue.use(Submenu)
+Vue.use(MenuItem)
+Vue.use(MenuItemGroup)
+Vue.use(Popover)
+Vue.use(Popconfirm)
 Vue.use(Loading.directive)
 
 Vue.prototype.$loading = Loading.service

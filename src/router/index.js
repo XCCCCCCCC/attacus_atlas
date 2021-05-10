@@ -27,6 +27,12 @@ const routes = [
     meta: { title: '存储' },
     component: () => import(/* webpackChunkName: "storage" */ '../views/Storage.vue'),
   },
+  {
+    path: '/insert',
+    name: 'insert',
+    meta: { title: '新增存储' },
+    component: () => import(/* webpackChunkName: "storage" */ '../views/Insert.vue'),
+  },
 ]
 
 const router = new VueRouter({

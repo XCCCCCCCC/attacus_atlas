@@ -44,6 +44,9 @@ html,
 body,
 #app {
   height: 100%;
+  .el-header {
+    padding: 0;
+  }
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

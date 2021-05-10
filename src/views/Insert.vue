@@ -1,25 +1,43 @@
 <script>
-import { main } from '@/api/query'
+import { add } from '@/api/storage'
 export default {
-  name: 'query',
+  name: '',
   components: {},
   props: {},
   data() {
     return {
       labelWidth: '140px',
-      queryForm: {
+      summaryForm: {
+        // id: '', //
+        // loanType: '', // 贷款类型
+        // loanName: '', // 贷款机构名称
+        // nation: '', // 国籍
+        // age: 18, // 年龄
+        // loanLimit: '', // 贷款额度
+        // loanInterest: '', // 贷款利息
+        // repaymentMethod: '', // 还款方式
+        // queryTimes: 0, // 查询次数
+        // residence: '', // 居住地
+        // repaymentTerm: '', // 期限
+        // material: '', // 需要材料
+        // creditRequirements: '', // 征信要求
+        // prepayment: '', // 提前还款
+        // incomingRequirements: '', // 进件要求
+        // applicationProcess: '', // 申请流程
+        // quotaAlgorithm: '', // 额度算法
+        // debtAlgorithm: '', // 负债算法
+        orgInfo: '', // 摘要
+      },
+      summaryFormRules: {},
+      detailForm: {
         id: '',
-        date: new Date(),
-        name: '', // 姓名
-        telNum: '', // 手机号
-        wechatNum: '', // 微信号
-        identityCardNum: '', // 身份证号码
-        education: 1, // 学历（专/本/硕/博）
-        loanAmount: 0, // 贷款金额
-        loanUse: '', // 贷款用途
-        age: 0, // 年龄
-        isKnow: true, // 家人是否知晓（是/否）
-        address: '', // 地址
+        loanType: '', // 贷款类型
+        loanName: '', // 贷款机构名称
+        lowAge: 0, // 最小年龄
+        highAge: 0, // 最大年龄
+        lowLoanLimit: 0, // 最低贷款额度
+        highLoanLimit: 0, // 最高贷款额度
+        isKnow: true, // 家人是否知晓
         isBlankRoster: false, // 是否白户
         // 上班
         hasWork: false,
@@ -43,9 +61,9 @@ export default {
         houseRegion: '', // 区域
         houseBuyMethod: 1, // 购买方式（全款/按揭）
         houseValue: 0, // 市值（单位；万）
-        houseMonthlyPayment: 0, // 月供（单位为元）
-        housePaymentPeriod: 0, // 还款期数（单位为月）
-        houseAge: 0, // 房龄（单位为年）
+        houseMonthlyPayment: 0, // 月供（元）
+        housePaymentPeriod: 0, // 还款期数（月）
+        houseAge: 0, // 房龄（年）
         houseInterestNum: 1, // 权利人数
         houseInterestAge: 0, // 权利人年龄
         houseIsMortage: false, // 是否抵押（是/否）
@@ -54,18 +72,18 @@ export default {
         carLocal: true, // 是否本地（是/否）
         carLicense: '', // 车牌
         carBuyMethod: 1, // 购买方式（全款/按揭）
-        carValue: 0, // 价值（单位为万）
-        carMonthlyPayment: 0, // 月供（单位为元）
-        carMonthlyPeriod: 0, // 期数（单位为月）
-        carAge: 0, // 车龄（单位为年）
-        carUseKm: 0, // 里程数（单位为公里）
+        carValue: 0, // 价值（万）
+        carMonthlyPayment: 0, // 月供（元）
+        carMonthlyPeriod: 0, // 期数（月）
+        carAge: 0, // 车龄（年）
+        carUseKm: 0, // 里程数（公里）
         // 保单
         hasPolicy: false,
         policyHolder: '', // 投保人
         policyInsuranceCompany: '', // 保险公司
         policyPaymentMethod: 1, // 缴费方式（月/年）
-        policyYearCost: 0, // 年费（单位为元）
-        policyPaymentPeriod: 0, // 缴费时长（单位为月）
+        policyYearCost: 0, // 年费（元）
+        policyPaymentPeriod: 0, // 缴费时长（月）
         // 征信
         hasCredit: false,
         creditIsDelay: false, // 是否当前有逾期（是/否）
@@ -90,7 +108,7 @@ export default {
         debtOnlineLoanTimes: 0, // 网贷次数
         debtOnlineLoanAmount: 0, // 网贷总额
       },
-      queryFormRules: {
+      detailFormRules: {
         // name: [
         //   {
         //     required: true,
@@ -141,7 +159,6 @@ export default {
         //   },
         // ],
       },
-      resultData: [],
     }
   },
   computed: {},
@@ -166,18 +183,20 @@ export default {
       return s.replace(/([A-Z])/g, '_$1').toLowerCase()
     },
     onSubmit() {
-      this.$refs.queryForm.validate((valid) => {
+      this.$refs.detailForm.validate((valid) => {
         if (valid) {
-          const keys = Object.keys(this.queryForm)
+          const summaryKeys = Object.keys(this.summaryForm)
+          const detailKeys = Object.keys(this.detailForm)
           const data = {}
-          for (const key of keys) {
-            data[this.hump2Underline(key)] = this.queryForm[key]
+          for (const key of summaryKeys) {
+            data[this.hump2Underline(key)] = this.summaryForm[key]
           }
-          console.log(data)
-          main(data)
+          for (const key of detailKeys) {
+            data[this.hump2Underline(key)] = this.detailForm[key]
+          }
+          add(data)
             .then((res) => {
-              console.log(data)
-              this.resultData = res
+              this.$router.push({ path: 'storage' })
             })
             .catch((err) => {
               console.log(err)
@@ -193,12 +212,122 @@ export default {
 </script>
 
 <template>
-  <div id="query">
+  <div id="insert">
     <el-form
       size="small"
-      ref="queryForm"
-      :model="queryForm"
-      :rules="queryFormRules"
+      ref="summaryForm"
+      :model="summaryForm"
+      :rules="summaryFormRules"
+      :label-width="labelWidth"
+      class="query-form"
+    >
+      <!-- 概要信息 -->
+      <el-divider>概要信息</el-divider>
+      <el-row :gutter="28">
+        <el-col :span="24">
+          <el-form-item label="贷款机构信息" prop="orgInfo">
+            <el-input type="textarea" :rows="8" v-model="summaryForm.orgInfo" placeholder="请输入地址"></el-input>
+          </el-form-item>
+        </el-col>
+        <!-- <el-col :span="8">
+          <el-form-item label="贷款类型" prop="loanType">
+            <el-input v-model="summaryForm.loanType" placeholder="请输入贷款类型"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="贷款机构名称" prop="loanName">
+            <el-input v-model="summaryForm.loanName" placeholder="请输入贷款机构名称"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="国籍" prop="nation">
+            <el-input v-model="summaryForm.nation" placeholder="请输入国籍"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="年龄" prop="age">
+            <el-input v-model="summaryForm.age" placeholder="请输入年龄"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="贷款额度" prop="loanLimit">
+            <el-input v-model="summaryForm.loanLimit" placeholder="请输入贷款额度"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="贷款利息" prop="loanInterest">
+            <el-input v-model="summaryForm.loanInterest" placeholder="请输入贷款利息"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="还款方式" prop="repaymentMethod">
+            <el-input v-model="summaryForm.repaymentMethod" placeholder="请输入还款方式"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="查询次数" prop="queryTimes">
+            <el-input-number
+              v-model="summaryForm.queryTimes"
+              controls-position="right"
+              :min="0"
+              style="width: 100%;"
+              placeholder="请输入查询次数"
+              @change="handleNumberChange('summaryForm', 'queryTimes')"
+            ></el-input-number>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="居住地" prop="residence">
+            <el-input v-model="summaryForm.residence" placeholder="请输入居住地"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="期限" prop="repaymentTerm">
+            <el-input v-model="summaryForm.repaymentTerm" placeholder="请输入期限"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="需要材料" prop="material">
+            <el-input v-model="summaryForm.material" placeholder="请输入需要材料"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="征信要求" prop="creditRequirements">
+            <el-input v-model="summaryForm.creditRequirements" placeholder="请输入征信要求"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="提前还款" prop="prepayment">
+            <el-input v-model="summaryForm.prepayment" placeholder="请输入提前还款"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="进件要求" prop="incomingRequirements">
+            <el-input v-model="summaryForm.incomingRequirements" placeholder="请输入进件要求"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="申请流程" prop="applicationProcess">
+            <el-input v-model="summaryForm.applicationProcess" placeholder="请输入申请流程"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="额度算法" prop="quotaAlgorithm">
+            <el-input v-model="summaryForm.quotaAlgorithm" placeholder="请输入额度算法"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="负债算法" prop="debtAlgorithm">
+            <el-input v-model="summaryForm.debtAlgorithm" placeholder="请输入负债算法"></el-input>
+          </el-form-item>
+        </el-col>-->
+      </el-row>
+    </el-form>
+    <el-form
+      size="small"
+      ref="detailForm"
+      :model="detailForm"
+      :rules="detailFormRules"
       :label-width="labelWidth"
       class="query-form"
     >
@@ -206,94 +335,76 @@ export default {
       <el-divider>基本信息</el-divider>
       <el-row :gutter="28">
         <el-col :span="8">
-          <el-form-item label="日期" prop="date">
-            <el-date-picker
-              type="date"
-              placeholder="请选择日期"
-              v-model="queryForm.date"
-              style="width: 100%;"
-            ></el-date-picker>
+          <el-form-item label="贷款类型" prop="loanType">
+            <el-input v-model="detailForm.loanType" placeholder="请输入贷款类型"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="姓名" prop="name">
-            <el-input v-model="queryForm.name" placeholder="请输入姓名"></el-input>
+          <el-form-item label="贷款机构名称" prop="loanName">
+            <el-input v-model="detailForm.loanName" placeholder="请输入贷款机构名称"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="手机号" prop="telNum">
-            <el-input v-model="queryForm.telNum" placeholder="请输入手机号"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="微信号" prop="wechatNum">
-            <el-input v-model="queryForm.wechatNum" placeholder="请输入微信号"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="身份证号码" prop="identityCardNum">
-            <el-input v-model="queryForm.identityCardNum" placeholder="请输入身份证号码"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="学历" prop="education">
-            <el-radio-group v-model="queryForm.education" placeholder="请选择学历">
-              <el-radio :label="1">专</el-radio>
-              <el-radio :label="2">本</el-radio>
-              <el-radio :label="3">硕</el-radio>
-              <el-radio :label="4">博</el-radio>
-              <el-radio :label="5">其他</el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="22">
-        <el-col :span="8">
-          <el-form-item label="贷款金额" prop="loanAmount">
+          <el-form-item label="最小年龄（年）" prop="lowAge">
             <el-input-number
-              v-model="queryForm.loanAmount"
-              controls-position="right"
-              :min="1"
-              style="width: 100%;"
-              placeholder="请输入贷款金额"
-              @change="handleNumberChange('queryForm', 'loanAmount')"
-            ></el-input-number>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="贷款用途" prop="loanUse">
-            <el-input v-model="queryForm.loanUse" placeholder="请输入贷款用途"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="年龄（年）" prop="age">
-            <el-input-number
-              v-model="queryForm.age"
+              v-model="detailForm.lowAge"
               controls-position="right"
               :min="0"
               :max="100"
               style="width: 100%;"
-              placeholder="请输入年龄"
-              @change="handleNumberChange('queryForm', 'age')"
+              placeholder="请输入最小年龄"
+              @change="handleNumberChange('detailForm', 'lowAge')"
+            ></el-input-number>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="最大年龄（年）" prop="highAge">
+            <el-input-number
+              v-model="detailForm.highAge"
+              controls-position="right"
+              :min="0"
+              :max="100"
+              style="width: 100%;"
+              placeholder="请输入最大年龄"
+              @change="handleNumberChange('detailForm', 'highAge')"
+            ></el-input-number>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="最低贷款额度（万）" prop="lowLoanLimit">
+            <el-input-number
+              v-model="detailForm.lowLoanLimit"
+              controls-position="right"
+              :min="0"
+              style="width: 100%;"
+              placeholder="请输入最低贷款额度"
+              @change="handleNumberChange('detailForm', 'lowLoanLimit')"
+            ></el-input-number>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="最高贷款额度（万）" prop="highLoanLimit">
+            <el-input-number
+              v-model="detailForm.highLoanLimit"
+              controls-position="right"
+              :min="0"
+              style="width: 100%;"
+              placeholder="请输入最高贷款额度"
+              @change="handleNumberChange('detailForm', 'highLoanLimit')"
             ></el-input-number>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="家人是否知晓" prop="isKnow">
-            <el-radio-group v-model="queryForm.isKnow" placeholder="请选择家人是否知晓">
+            <el-radio-group v-model="detailForm.isKnow" placeholder="请选择家人是否知晓">
               <el-radio :label="true">是</el-radio>
               <el-radio :label="false">否</el-radio>
             </el-radio-group>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="地址" prop="address">
-            <el-input type="textarea" v-model="queryForm.address" placeholder="请输入地址"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
           <el-form-item label="是否白户" prop="isBlankRoster">
-            <el-radio-group v-model="queryForm.isBlankRoster" placeholder="请选择是否白户">
+            <el-radio-group v-model="detailForm.isBlankRoster" placeholder="请选择是否白户">
               <el-radio :label="true">是</el-radio>
               <el-radio :label="false">否</el-radio>
             </el-radio-group>
@@ -303,61 +414,61 @@ export default {
       <!-- 上班 -->
       <el-divider>上班</el-divider>
       <el-form-item label="上班">
-        <el-switch v-model="queryForm.hasWork" placeholder="请选择上班"></el-switch>
+        <el-switch v-model="detailForm.hasWork" placeholder="请选择上班"></el-switch>
       </el-form-item>
-      <template v-if="queryForm.hasWork">
+      <template v-if="detailForm.hasWork">
         <el-row :gutter="28">
           <el-col :span="8">
             <el-form-item label="公积金（元）" prop="workAccumulationFund">
               <el-input-number
-                v-model="queryForm.workAccumulationFund"
+                v-model="detailForm.workAccumulationFund"
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入公积金"
-                @change="handleNumberChange('queryForm', 'workAccumulationFund')"
+                @change="handleNumberChange('detailForm', 'workAccumulationFund')"
               ></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="社保（元）" prop="workSocialSecurity">
               <el-input-number
-                v-model="queryForm.workSocialSecurity"
+                v-model="detailForm.workSocialSecurity"
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入社保"
-                @change="handleNumberChange('queryForm', 'workSocialSecurity')"
+                @change="handleNumberChange('detailForm', 'workSocialSecurity')"
               ></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="打卡工资（元）" prop="workSalary">
               <el-input-number
-                v-model="queryForm.workSalary"
+                v-model="detailForm.workSalary"
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入打卡工资"
-                @change="handleNumberChange('queryForm', 'workSalary')"
+                @change="handleNumberChange('detailForm', 'workSalary')"
               ></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="工作时长（月）" prop="workHour">
               <el-input-number
-                v-model="queryForm.workHour"
+                v-model="detailForm.workHour"
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入工作时长"
-                @change="handleNumberChange('queryForm', 'workHour')"
+                @change="handleNumberChange('detailForm', 'workHour')"
               ></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="16">
             <el-form-item label="公司性质" prop="workCompanyNature">
-              <el-checkbox-group v-model="queryForm.workCompanyNature" placeholder="请选择公司性质">
+              <el-checkbox-group v-model="detailForm.workCompanyNature" placeholder="请选择公司性质">
                 <el-checkbox :label="1">事业</el-checkbox>
                 <el-checkbox :label="2">国企</el-checkbox>
                 <el-checkbox :label="3">民营</el-checkbox>
@@ -370,51 +481,51 @@ export default {
       <!-- 做生意 -->
       <el-divider>做生意</el-divider>
       <el-form-item label="做生意">
-        <el-switch v-model="queryForm.hasBusiness"></el-switch>
+        <el-switch v-model="detailForm.hasBusiness"></el-switch>
       </el-form-item>
-      <template v-if="queryForm.hasBusiness">
+      <template v-if="detailForm.hasBusiness">
         <el-row :gutter="28">
           <el-col :span="8">
             <el-form-item label="营业执照" prop="businessLicense">
-              <el-input v-model="queryForm.businessLicense"></el-input>
+              <el-input v-model="detailForm.businessLicense"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="职位" prop="businessPosition">
-              <el-input v-model="queryForm.businessPosition"></el-input>
+              <el-input v-model="detailForm.businessPosition"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="经营时长（月）" prop="businessHour">
               <el-input-number
-                v-model="queryForm.businessHour"
+                v-model="detailForm.businessHour"
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
-                @change="handleNumberChange('queryForm', 'businessHour')"
+                @change="handleNumberChange('detailForm', 'businessHour')"
               ></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="经营地址" prop="businessAddress">
-              <el-input type="textarea" v-model="queryForm.businessAddress"></el-input>
+              <el-input type="textarea" v-model="detailForm.businessAddress"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="经营行业" prop="businessIndustry">
-              <el-input v-model="queryForm.businessIndustry"></el-input>
+              <el-input v-model="detailForm.businessIndustry"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="做生意流水（元）" prop="businessFlow">
-              <el-input v-model="queryForm.businessFlow"></el-input>
+              <el-input v-model="detailForm.businessFlow"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="28">
           <el-col :span="8">
             <el-form-item label="做生意税（元）" prop="businessTax">
-              <el-input v-model="queryForm.businessTax"></el-input>
+              <el-input v-model="detailForm.businessTax"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -422,13 +533,13 @@ export default {
       <!-- 房 -->
       <el-divider>房</el-divider>
       <el-form-item label="房">
-        <el-switch v-model="queryForm.hasHouse" placeholder="请选择房"></el-switch>
+        <el-switch v-model="detailForm.hasHouse" placeholder="请选择房"></el-switch>
       </el-form-item>
-      <template v-if="queryForm.hasHouse">
+      <template v-if="detailForm.hasHouse">
         <el-row :gutter="28">
           <el-col :span="8">
             <el-form-item label="是否本地" prop="houseLocal">
-              <el-radio-group v-model="queryForm.houseLocal" placeholder="请选择是否本地">
+              <el-radio-group v-model="detailForm.houseLocal" placeholder="请选择是否本地">
                 <el-radio :label="true">是</el-radio>
                 <el-radio :label="false">否</el-radio>
               </el-radio-group>
@@ -436,51 +547,51 @@ export default {
           </el-col>
           <el-col :span="8">
             <el-form-item label="区域（用|分隔）" prop="houseRegion">
-              <el-input v-model="queryForm.houseRegion" placeholder="请输入区域"></el-input>
+              <el-input v-model="detailForm.houseRegion" placeholder="请输入区域"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="市值（万）" prop="houseValue">
               <el-input-number
-                v-model="queryForm.houseValue"
+                v-model="detailForm.houseValue"
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
-                placeholder="请输入市值（万）"
-                @change="handleNumberChange('queryForm', 'houseValue')"
+                placeholder="请输入市值"
+                @change="handleNumberChange('detailForm', 'houseValue')"
               ></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="购买方式" prop="houseBuyMethod">
-              <el-radio-group v-model="queryForm.houseBuyMethod" placeholder="请选择购买方式">
+              <el-radio-group v-model="detailForm.houseBuyMethod" placeholder="请选择购买方式">
                 <el-radio :label="1">全款</el-radio>
                 <el-radio :label="2">按揭</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
-          <template v-if="queryForm.houseBuyMethod === 2">
+          <template v-if="detailForm.houseBuyMethod === 2">
             <el-col :span="8">
               <el-form-item label="月供（元）" prop="houseMonthlyPayment">
                 <el-input-number
-                  v-model="queryForm.houseMonthlyPayment"
+                  v-model="detailForm.houseMonthlyPayment"
                   controls-position="right"
                   :min="0"
                   style="width: 100%;"
-                  placeholder="请输入月供（元）"
-                  @change="handleNumberChange('queryForm', 'houseMonthlyPayment')"
+                  placeholder="请输入月供"
+                  @change="handleNumberChange('detailForm', 'houseMonthlyPayment')"
                 ></el-input-number>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="还款期数（月）" prop="housePaymentPeriod">
                 <el-input-number
-                  v-model="queryForm.housePaymentPeriod"
+                  v-model="detailForm.housePaymentPeriod"
                   controls-position="right"
                   :min="0"
                   style="width: 100%;"
-                  placeholder="请输入还款期数（月）"
-                  @change="handleNumberChange('queryForm', 'housePaymentPeriod')"
+                  placeholder="请输入还款期数"
+                  @change="handleNumberChange('detailForm', 'housePaymentPeriod')"
                 ></el-input-number>
               </el-form-item>
             </el-col>
@@ -488,42 +599,42 @@ export default {
           <el-col :span="8">
             <el-form-item label="房龄（年）" prop="houseAge">
               <el-input-number
-                v-model="queryForm.houseAge"
+                v-model="detailForm.houseAge"
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
-                placeholder="请输入房龄（年）"
-                @change="handleNumberChange('queryForm', 'houseAge')"
+                placeholder="请输入房龄"
+                @change="handleNumberChange('detailForm', 'houseAge')"
               ></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="权利人数（个）" prop="houseInterestNum">
               <el-input-number
-                v-model="queryForm.houseInterestNum"
+                v-model="detailForm.houseInterestNum"
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入权利人数"
-                @change="handleNumberChange('queryForm', 'houseInterestNum')"
+                @change="handleNumberChange('detailForm', 'houseInterestNum')"
               ></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="权利人年龄（年）" prop="houseInterestAge">
               <el-input-number
-                v-model="queryForm.houseInterestAge"
+                v-model="detailForm.houseInterestAge"
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入权利人年龄"
-                @change="handleNumberChange('queryForm', 'houseInterestAge')"
+                @change="handleNumberChange('detailForm', 'houseInterestAge')"
               ></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="是否抵押" prop="houseIsMortage">
-              <el-radio-group v-model="queryForm.houseIsMortage" placeholder="请选择是否抵押">
+              <el-radio-group v-model="detailForm.houseIsMortage" placeholder="请选择是否抵押">
                 <el-radio :label="true">是</el-radio>
                 <el-radio :label="false">否</el-radio>
               </el-radio-group>
@@ -534,13 +645,13 @@ export default {
       <!-- 车 -->
       <el-divider>车</el-divider>
       <el-form-item label="车">
-        <el-switch v-model="queryForm.hasCar" placeholder="请选择车"></el-switch>
+        <el-switch v-model="detailForm.hasCar" placeholder="请选择车"></el-switch>
       </el-form-item>
-      <template v-if="queryForm.hasCar">
+      <template v-if="detailForm.hasCar">
         <el-row :gutter="28">
           <el-col :span="8">
             <el-form-item label="是否本地" prop="carLocal">
-              <el-radio-group v-model="queryForm.carLocal" placeholder="请选择是否本地">
+              <el-radio-group v-model="detailForm.carLocal" placeholder="请选择是否本地">
                 <el-radio :label="true">是</el-radio>
                 <el-radio :label="false">否</el-radio>
               </el-radio-group>
@@ -548,51 +659,51 @@ export default {
           </el-col>
           <el-col :span="8">
             <el-form-item label="车牌" prop="carLicense">
-              <el-input v-model="queryForm.carLicense" placeholder="请输入车牌"></el-input>
+              <el-input v-model="detailForm.carLicense" placeholder="请输入车牌"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="价值（万）" prop="carValue">
               <el-input-number
-                v-model="queryForm.carValue"
+                v-model="detailForm.carValue"
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入价值"
-                @change="handleNumberChange('queryForm', 'carValue')"
+                @change="handleNumberChange('detailForm', 'carValue')"
               ></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="购买方式" prop="carBuyMethod">
-              <el-radio-group v-model="queryForm.carBuyMethod" placeholder="请选择购买方式">
+              <el-radio-group v-model="detailForm.carBuyMethod" placeholder="请选择购买方式">
                 <el-radio :label="1">全款</el-radio>
                 <el-radio :label="2">按揭</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
-          <template v-if="queryForm.carBuyMethod === 2">
+          <template v-if="detailForm.carBuyMethod === 2">
             <el-col :span="8">
               <el-form-item label="月供（元）" prop="carMonthlyPayment">
                 <el-input-number
-                  v-model="queryForm.carMonthlyPayment"
+                  v-model="detailForm.carMonthlyPayment"
                   controls-position="right"
                   :min="0"
                   style="width: 100%;"
                   placeholder="请输入月供"
-                  @change="handleNumberChange('queryForm', 'carMonthlyPayment')"
+                  @change="handleNumberChange('detailForm', 'carMonthlyPayment')"
                 ></el-input-number>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="还款期数（月）" prop="carMonthlyPeriod">
                 <el-input-number
-                  v-model="queryForm.carMonthlyPeriod"
+                  v-model="detailForm.carMonthlyPeriod"
                   controls-position="right"
                   :min="0"
                   style="width: 100%;"
                   placeholder="请输入还款期数"
-                  @change="handleNumberChange('queryForm', 'carMonthlyPeriod')"
+                  @change="handleNumberChange('detailForm', 'carMonthlyPeriod')"
                 ></el-input-number>
               </el-form-item>
             </el-col>
@@ -600,24 +711,24 @@ export default {
           <el-col :span="8">
             <el-form-item label="车龄（年）" prop="carAge">
               <el-input-number
-                v-model="queryForm.carAge"
+                v-model="detailForm.carAge"
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入车龄"
-                @change="handleNumberChange('queryForm', 'carAge')"
+                @change="handleNumberChange('detailForm', 'carAge')"
               ></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="里程数（公里）" prop="carUseKm">
               <el-input-number
-                v-model="queryForm.carUseKm"
+                v-model="detailForm.carUseKm"
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入里程数"
-                @change="handleNumberChange('queryForm', 'carUseKm')"
+                @change="handleNumberChange('detailForm', 'carUseKm')"
               ></el-input-number>
             </el-form-item>
           </el-col>
@@ -626,23 +737,23 @@ export default {
       <!-- 保单 -->
       <el-divider>保单</el-divider>
       <el-form-item label="保单">
-        <el-switch v-model="queryForm.hasPolicy" placeholder="请选择保单"></el-switch>
+        <el-switch v-model="detailForm.hasPolicy" placeholder="请选择保单"></el-switch>
       </el-form-item>
-      <template v-if="queryForm.hasPolicy">
+      <template v-if="detailForm.hasPolicy">
         <el-row :gutter="28">
           <el-col :span="8">
             <el-form-item label="投保人" prop="policyHolder">
-              <el-input v-model="queryForm.policyHolder" placeholder="请输入投保人"></el-input>
+              <el-input v-model="detailForm.policyHolder" placeholder="请输入投保人"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="保险公司" prop="policyInsuranceCompany">
-              <el-input v-model="queryForm.policyInsuranceCompany" placeholder="请输入保险公司"></el-input>
+              <el-input v-model="detailForm.policyInsuranceCompany" placeholder="请输入保险公司"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="缴费方式" prop="policyPaymentMethod">
-              <el-radio-group v-model="queryForm.policyPaymentMethod" placeholder="请选择缴费方式">
+              <el-radio-group v-model="detailForm.policyPaymentMethod" placeholder="请选择缴费方式">
                 <el-radio :label="1">月</el-radio>
                 <el-radio :label="2">年</el-radio>
               </el-radio-group>
@@ -653,24 +764,24 @@ export default {
           <el-col :span="8">
             <el-form-item label="年费（元）" prop="policyYearCost">
               <el-input-number
-                v-model="queryForm.policyYearCost"
+                v-model="detailForm.policyYearCost"
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入年费"
-                @change="handleNumberChange('queryForm', 'policyYearCost')"
+                @change="handleNumberChange('detailForm', 'policyYearCost')"
               ></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="缴费时长（月）" prop="policyPaymentPeriod">
               <el-input-number
-                v-model="queryForm.policyPaymentPeriod"
+                v-model="detailForm.policyPaymentPeriod"
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入缴费时长"
-                @change="handleNumberChange('queryForm', 'policyPaymentPeriod')"
+                @change="handleNumberChange('detailForm', 'policyPaymentPeriod')"
               ></el-input-number>
             </el-form-item>
           </el-col>
@@ -680,11 +791,11 @@ export default {
       <!-- 征信 -->
       <el-divider>征信</el-divider>
       <el-form-item label="征信">
-        <el-switch v-model="queryForm.hasCredit" placeholder="请选择征信"></el-switch>
+        <el-switch v-model="detailForm.hasCredit" placeholder="请选择征信"></el-switch>
       </el-form-item>
-      <template v-if="queryForm.hasCredit">
+      <template v-if="detailForm.hasCredit">
         <el-form-item label="是否当前有逾期" prop="creditIsDelay">
-          <el-radio-group v-model="queryForm.creditIsDelay" placeholder="请选择是否当前有逾期">
+          <el-radio-group v-model="detailForm.creditIsDelay" placeholder="请选择是否当前有逾期">
             <el-radio :label="true">是</el-radio>
             <el-radio :label="false">否</el-radio>
           </el-radio-group>
@@ -694,144 +805,144 @@ export default {
             <el-col :span="8">
               <el-form-item label="近3月逾期次" prop="creditThreeMonthDelayTimes">
                 <el-input-number
-                  v-model="queryForm.creditThreeMonthDelayTimes"
+                  v-model="detailForm.creditThreeMonthDelayTimes"
                   controls-position="right"
                   :min="0"
                   style="width: 100%;"
                   placeholder="请输入近3月逾期次"
-                  @change="handleNumberChange('queryForm', 'creditThreeMonthDelayTimes')"
+                  @change="handleNumberChange('detailForm', 'creditThreeMonthDelayTimes')"
                 ></el-input-number>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="近6月逾期次" prop="creditSixMonthDelayTimes">
                 <el-input-number
-                  v-model="queryForm.creditSixMonthDelayTimes"
+                  v-model="detailForm.creditSixMonthDelayTimes"
                   controls-position="right"
                   :min="0"
                   style="width: 100%;"
                   placeholder="请输入近6月逾期次"
-                  @change="handleNumberChange('queryForm', 'creditSixMonthDelayTimes')"
+                  @change="handleNumberChange('detailForm', 'creditSixMonthDelayTimes')"
                 ></el-input-number>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="近1年逾期次" prop="creditYearDelayTimes">
                 <el-input-number
-                  v-model="queryForm.creditYearDelayTimes"
+                  v-model="detailForm.creditYearDelayTimes"
                   controls-position="right"
                   :min="0"
                   style="width: 100%;"
                   placeholder="请输入近1年逾期次"
-                  @change="handleNumberChange('queryForm', 'creditYearDelayTimes')"
+                  @change="handleNumberChange('detailForm', 'creditYearDelayTimes')"
                 ></el-input-number>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="近2年逾期次" prop="creditTwoYearDelayTimes">
                 <el-input-number
-                  v-model="queryForm.creditTwoYearDelayTimes"
+                  v-model="detailForm.creditTwoYearDelayTimes"
                   controls-position="right"
                   :min="0"
                   style="width: 100%;"
                   placeholder="请输入近2年逾期次"
-                  @change="handleNumberChange('queryForm', 'creditTwoYearDelayTimes')"
+                  @change="handleNumberChange('detailForm', 'creditTwoYearDelayTimes')"
                 ></el-input-number>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="近3月连续逾期次" prop="creditSeriesThreeMonthDelayTimes">
                 <el-input-number
-                  v-model="queryForm.creditSeriesThreeMonthDelayTimes"
+                  v-model="detailForm.creditSeriesThreeMonthDelayTimes"
                   controls-position="right"
                   :min="0"
                   style="width: 100%;"
                   placeholder="请输入近3月连续逾期次"
-                  @change="handleNumberChange('queryForm', 'creditSeriesThreeMonthDelayTimes')"
+                  @change="handleNumberChange('detailForm', 'creditSeriesThreeMonthDelayTimes')"
                 ></el-input-number>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="近6月连续逾期次" prop="creditSeriesSixMonthDelayTimes">
                 <el-input-number
-                  v-model="queryForm.creditSeriesSixMonthDelayTimes"
+                  v-model="detailForm.creditSeriesSixMonthDelayTimes"
                   controls-position="right"
                   :min="0"
                   style="width: 100%;"
                   placeholder="请输入近6月连续逾期次"
-                  @change="handleNumberChange('queryForm', 'creditSeriesSixMonthDelayTimes')"
+                  @change="handleNumberChange('detailForm', 'creditSeriesSixMonthDelayTimes')"
                 ></el-input-number>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="近1年连续逾期次" prop="creditSeriesYearDelayTimes">
                 <el-input-number
-                  v-model="queryForm.creditSeriesYearDelayTimes"
+                  v-model="detailForm.creditSeriesYearDelayTimes"
                   controls-position="right"
                   :min="0"
                   style="width: 100%;"
                   placeholder="请输入近1年连续逾期次"
-                  @change="handleNumberChange('queryForm', 'creditSeriesYearDelayTimes')"
+                  @change="handleNumberChange('detailForm', 'creditSeriesYearDelayTimes')"
                 ></el-input-number>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="近2年连续逾期次" prop="creditSeriesTwoYearDelayTimes">
                 <el-input-number
-                  v-model="queryForm.creditSeriesTwoYearDelayTimes"
+                  v-model="detailForm.creditSeriesTwoYearDelayTimes"
                   controls-position="right"
                   :min="0"
                   style="width: 100%;"
                   placeholder="请输入近2年连续逾期次"
-                  @change="handleNumberChange('queryForm', 'creditSeriesTwoYearDelayTimes')"
+                  @change="handleNumberChange('detailForm', 'creditSeriesTwoYearDelayTimes')"
                 ></el-input-number>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="近3月查询" prop="creditThreeMonthQueryTimes">
                 <el-input-number
-                  v-model="queryForm.creditThreeMonthQueryTimes"
+                  v-model="detailForm.creditThreeMonthQueryTimes"
                   controls-position="right"
                   :min="0"
                   style="width: 100%;"
                   placeholder="请输入近3月查询"
-                  @change="handleNumberChange('queryForm', 'creditThreeMonthQueryTimes')"
+                  @change="handleNumberChange('detailForm', 'creditThreeMonthQueryTimes')"
                 ></el-input-number>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="近6月查询" prop="creditSixMonthQueryTimes">
                 <el-input-number
-                  v-model="queryForm.creditSixMonthQueryTimes"
+                  v-model="detailForm.creditSixMonthQueryTimes"
                   controls-position="right"
                   :min="0"
                   style="width: 100%;"
                   placeholder="请输入近6月查询"
-                  @change="handleNumberChange('queryForm', 'creditSixMonthQueryTimes')"
+                  @change="handleNumberChange('detailForm', 'creditSixMonthQueryTimes')"
                 ></el-input-number>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="近1年查询" prop="creditYearQueryTimes">
                 <el-input-number
-                  v-model="queryForm.creditYearQueryTimes"
+                  v-model="detailForm.creditYearQueryTimes"
                   controls-position="right"
                   :min="0"
                   style="width: 100%;"
                   placeholder="请输入近1年查询"
-                  @change="handleNumberChange('queryForm', 'creditYearQueryTimes')"
+                  @change="handleNumberChange('detailForm', 'creditYearQueryTimes')"
                 ></el-input-number>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="近2年查询" prop="creditTwoYearQueryTimes">
                 <el-input-number
-                  v-model="queryForm.creditTwoYearQueryTimes"
+                  v-model="detailForm.creditTwoYearQueryTimes"
                   controls-position="right"
                   :min="0"
                   style="width: 100%;"
                   placeholder="请输入近2年查询"
-                  @change="handleNumberChange('queryForm', 'creditTwoYearQueryTimes')"
+                  @change="handleNumberChange('detailForm', 'creditTwoYearQueryTimes')"
                 ></el-input-number>
               </el-form-item>
             </el-col>
@@ -842,196 +953,96 @@ export default {
       <!-- 负债 -->
       <el-divider>负债</el-divider>
       <el-form-item label="负债">
-        <el-switch v-model="queryForm.hasDebt" placeholder="请选择负债"></el-switch>
+        <el-switch v-model="detailForm.hasDebt" placeholder="请选择负债"></el-switch>
       </el-form-item>
-      <template v-if="queryForm.hasDebt">
+      <template v-if="detailForm.hasDebt">
         <el-row :gutter="28">
           <el-col :span="8">
             <el-form-item label="信用卡总额度（万）" prop="debtCreditAmount">
               <el-input-number
-                v-model="queryForm.debtCreditAmount"
+                v-model="detailForm.debtCreditAmount"
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入信用卡总额度"
-                @change="handleNumberChange('queryForm', 'debtCreditAmount')"
+                @change="handleNumberChange('detailForm', 'debtCreditAmount')"
               ></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="已用额度（万）" prop="debtCreditUsedAmount">
               <el-input-number
-                v-model="queryForm.debtCreditUsedAmount"
+                v-model="detailForm.debtCreditUsedAmount"
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入已用额度"
-                @change="handleNumberChange('queryForm', 'debtCreditUsedAmount')"
+                @change="handleNumberChange('detailForm', 'debtCreditUsedAmount')"
               ></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="贷款次数" prop="debtLoanTimes">
               <el-input-number
-                v-model="queryForm.debtLoanTimes"
+                v-model="detailForm.debtLoanTimes"
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入贷款次数"
-                @change="handleNumberChange('queryForm', 'debtLoanTimes')"
+                @change="handleNumberChange('detailForm', 'debtLoanTimes')"
               ></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="贷款总额（万）" prop="debtLoanAmount">
               <el-input-number
-                v-model="queryForm.debtLoanAmount"
+                v-model="detailForm.debtLoanAmount"
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入贷款总额"
-                @change="handleNumberChange('queryForm', 'debtLoanAmount')"
+                @change="handleNumberChange('detailForm', 'debtLoanAmount')"
               ></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="网贷次数" prop="debtOnlineLoanTimes">
               <el-input-number
-                v-model="queryForm.debtOnlineLoanTimes"
+                v-model="detailForm.debtOnlineLoanTimes"
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入网贷次数"
-                @change="handleNumberChange('queryForm', 'debtOnlineLoanTimes')"
+                @change="handleNumberChange('detailForm', 'debtOnlineLoanTimes')"
               ></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="网贷总额（万）" prop="debtOnlineLoanAmount">
               <el-input-number
-                v-model="queryForm.debtOnlineLoanAmount"
+                v-model="detailForm.debtOnlineLoanAmount"
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
                 placeholder="请输入网贷总额"
-                @change="handleNumberChange('queryForm', 'debtOnlineLoanAmount')"
+                @change="handleNumberChange('detailForm', 'debtOnlineLoanAmount')"
               ></el-input-number>
             </el-form-item>
           </el-col>
         </el-row>
       </template>
-
       <el-form-item>
-        <el-button type="primary" @click="onSubmit">查询</el-button>
+        <el-button type="primary" @click="onSubmit">添加</el-button>
       </el-form-item>
     </el-form>
-    <el-table border :data="resultData" style="width: 100%,">
-      <!-- <el-table-column show-overflow-tooltip label="序号">
-        <template slot-scope="scope">
-          <span>{{ scope.row.id }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="贷款类型">
-        <template slot-scope="scope">
-          <span>{{ scope.row.loan_type }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="贷款机构名称">
-        <template slot-scope="scope">
-          <span>{{ scope.row.loan_name }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="国籍">
-        <template slot-scope="scope">
-          <span>{{ scope.row.nation }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="年龄">
-        <template slot-scope="scope">
-          <span>{{ scope.row.age }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="贷款额度">
-        <template slot-scope="scope">
-          <span>{{ scope.row.loan_limit }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="贷款利息">
-        <template slot-scope="scope">
-          <span>{{ scope.row.loan_interest }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="还款方式">
-        <template slot-scope="scope">
-          <span>{{ scope.row.repayment_method }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="查询次数">
-        <template slot-scope="scope">
-          <span>{{ scope.row.query_times }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="居住地">
-        <template slot-scope="scope">
-          <span>{{ scope.row.resident }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="期限">
-        <template slot-scope="scope">
-          <span>{{ scope.row.repayment_term }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="需要材料">
-        <template slot-scope="scope">
-          <span>{{ scope.row.material }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="征信要求">
-        <template slot-scope="scope">
-          <span>{{ scope.row.credit_requirements }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="提前还款">
-        <template slot-scope="scope">
-          <span>{{ scope.row.prepayment }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="进件要求">
-        <template slot-scope="scope">
-          <span>{{ scope.row.incoming_requirements }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="申请流程">
-        <template slot-scope="scope">
-          <span>{{ scope.row.application_process }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="额度算法">
-        <template slot-scope="scope">
-          <span>{{ scope.row.quota_algorithm }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="负债算法">
-        <template slot-scope="scope">
-          <span>{{ scope.row.debt_algorithm }}</span>
-        </template>
-      </el-table-column>-->
-      <el-table-column show-overflow-tooltip label="贷款机构信息" :min-width="200">
-        <template slot-scope="scope">
-          <span>{{ scope.row.org_info }}</span>
-        </template>
-      </el-table-column>
-    </el-table>
   </div>
 </template>
 
 <style lang="scss">
-#query {
+#insert {
   // width: 400px;
-  .query-form {
-    .el-form-item__label {
-      text-align-last: justify;
-    }
+  .el-form-item__label {
+    text-align-last: justify;
   }
 }
 </style>
