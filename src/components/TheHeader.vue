@@ -29,7 +29,7 @@ export default {
       mode="horizontal"
       background-color="#545c64"
       text-color="#fff"
-      active-text-color="#ffd04b"
+      active-text-color="#409EFF"
       router
     >
       <el-menu-item index="query">查询</el-menu-item>

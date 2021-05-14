@@ -193,7 +193,7 @@ export default {
       </el-table-column>
       <el-table-column :width="150" show-overflow-tooltip label="是否白户（Y/N）">
         <template slot-scope="scope">
-          <span>{{ scope.row.high_loan_limit }}</span>
+          <span>{{ scope.row.is_blank_roster }}</span>
         </template>
       </el-table-column>
       <el-table-column :width="180" show-overflow-tooltip label="家人是否知道（Y/N）">
