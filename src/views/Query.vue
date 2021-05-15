@@ -28,7 +28,7 @@ export default {
         workSalary: 0, // 打卡工资
         workHour: 0, // 工作时长
         workCompanyNature: [], // 公司性质（事业/国企/民营）
-        // 做生意
+        // 生意
         hasBusiness: false,
         businessLicense: '', // 营业执照
         businessPosition: '', // 职位
@@ -37,19 +37,20 @@ export default {
         businessIndustry: '', // 经营行业
         businessFlow: 0, // 流水
         businessTax: 0, // 税
-        // 房
+        // 房产
         hasHouse: false,
         houseLocal: true, // 是否本地（上海/外地）
         houseRegion: '', // 区域
         houseBuyMethod: 1, // 购买方式（全款/按揭）
         houseValue: 0, // 市值（单位；万）
+        houseSize: 0, // 面积（单位；平方）
         houseMonthlyPayment: 0, // 月供（单位为元）
         housePaymentPeriod: 0, // 还款期数（单位为月）
         houseAge: 0, // 房龄（单位为年）
         houseInterestNum: 1, // 权利人数
         houseInterestAge: 0, // 权利人年龄
         houseIsMortage: false, // 是否抵押（是/否）
-        // 车
+        // 车辆
         hasCar: false,
         carLocal: true, // 是否本地（是/否）
         carLicense: '', // 车牌
@@ -66,6 +67,7 @@ export default {
         policyPaymentMethod: 1, // 缴费方式（月/年）
         policyYearCost: 0, // 年费（单位为元）
         policyPaymentPeriod: 0, // 缴费时长（单位为月）
+        policyPaymentTimes: 0, // 缴纳次数
         // 征信
         hasCredit: false,
         creditIsDelay: false, // 是否当前有逾期（是/否）
@@ -81,6 +83,10 @@ export default {
         creditSixMonthQueryTimes: 0, // 近6月查询
         creditYearQueryTimes: 0, // 近1年查询
         creditTwoYearQueryTimes: 0, // 近2年查询
+        creditThreeMonthHasTimes: 0, // 近3月有
+        creditSixMonthHasTimes: 0, // 近6月有
+        creditYearHasTimes: 0, // 近1年有
+        creditTwoYearHasTimes: 0, // 近2年有
         // 负债
         hasDebt: false,
         debtCreditAmount: 0, // 信用卡总额度
@@ -142,6 +148,8 @@ export default {
         // ],
       },
       resultData: [],
+      drawer: false,
+      direction: 'rtl',
     }
   },
   computed: {},
@@ -173,11 +181,20 @@ export default {
           for (const key of keys) {
             data[this.hump2Underline(key)] = this.queryForm[key]
           }
-          console.log(data)
+          // console.log(data)
+          this.resultData = []
           main(data)
             .then((res) => {
-              console.log(data)
+              // console.log(data)
               this.resultData = res
+              this.$message({
+                message: '查询成功！',
+                type: 'success',
+                duration: 1000,
+                onClose: () => {
+                  this.drawer = true
+                },
+              })
             })
             .catch((err) => {
               console.log(err)
@@ -194,6 +211,113 @@ export default {
 
 <template>
   <div id="query">
+    <el-drawer
+      custom-class="query-drawer"
+      title="查询结果"
+      :visible.sync="drawer"
+      :direction="direction"
+      :size="768"
+    >
+      <div class="result-wrapper">
+        <el-table border :data="resultData" style="width: 100%,">
+          <!-- <el-table-column show-overflow-tooltip label="序号">
+        <template slot-scope="scope">
+          <span>{{ scope.row.id }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column show-overflow-tooltip label="贷款类型">
+        <template slot-scope="scope">
+          <span>{{ scope.row.loan_type }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column show-overflow-tooltip label="贷款机构名称">
+        <template slot-scope="scope">
+          <span>{{ scope.row.loan_name }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column show-overflow-tooltip label="国籍">
+        <template slot-scope="scope">
+          <span>{{ scope.row.nation }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column show-overflow-tooltip label="年龄">
+        <template slot-scope="scope">
+          <span>{{ scope.row.age }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column show-overflow-tooltip label="贷款额度">
+        <template slot-scope="scope">
+          <span>{{ scope.row.loan_limit }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column show-overflow-tooltip label="贷款利息">
+        <template slot-scope="scope">
+          <span>{{ scope.row.loan_interest }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column show-overflow-tooltip label="还款方式">
+        <template slot-scope="scope">
+          <span>{{ scope.row.repayment_method }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column show-overflow-tooltip label="查询次数">
+        <template slot-scope="scope">
+          <span>{{ scope.row.query_times }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column show-overflow-tooltip label="居住地">
+        <template slot-scope="scope">
+          <span>{{ scope.row.resident }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column show-overflow-tooltip label="期限">
+        <template slot-scope="scope">
+          <span>{{ scope.row.repayment_term }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column show-overflow-tooltip label="需要材料">
+        <template slot-scope="scope">
+          <span>{{ scope.row.material }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column show-overflow-tooltip label="征信要求">
+        <template slot-scope="scope">
+          <span>{{ scope.row.credit_requirements }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column show-overflow-tooltip label="提前还款">
+        <template slot-scope="scope">
+          <span>{{ scope.row.prepayment }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column show-overflow-tooltip label="进件要求">
+        <template slot-scope="scope">
+          <span>{{ scope.row.incoming_requirements }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column show-overflow-tooltip label="申请流程">
+        <template slot-scope="scope">
+          <span>{{ scope.row.application_process }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column show-overflow-tooltip label="额度算法">
+        <template slot-scope="scope">
+          <span>{{ scope.row.quota_algorithm }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column show-overflow-tooltip label="负债算法">
+        <template slot-scope="scope">
+          <span>{{ scope.row.debt_algorithm }}</span>
+        </template>
+          </el-table-column>-->
+          <el-table-column show-overflow-tooltip label="贷款机构信息" :min-width="200">
+            <template slot-scope="scope">
+              <span>{{ scope.row.org_info }}</span>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </el-drawer>
     <el-form
       size="small"
       ref="queryForm"
@@ -367,9 +491,9 @@ export default {
           </el-col>
         </el-row>
       </template>
-      <!-- 做生意 -->
-      <el-divider>做生意</el-divider>
-      <el-form-item label="做生意">
+      <!-- 生意 -->
+      <el-divider>生意</el-divider>
+      <el-form-item label="生意">
         <el-switch v-model="queryForm.hasBusiness"></el-switch>
       </el-form-item>
       <template v-if="queryForm.hasBusiness">
@@ -406,22 +530,22 @@ export default {
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="做生意流水（元）" prop="businessFlow">
+            <el-form-item label="流水（万）" prop="businessFlow">
               <el-input v-model="queryForm.businessFlow"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="28">
           <el-col :span="8">
-            <el-form-item label="做生意税（元）" prop="businessTax">
+            <el-form-item label="生意缴纳税额(元)" prop="businessTax">
               <el-input v-model="queryForm.businessTax"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
       </template>
-      <!-- 房 -->
-      <el-divider>房</el-divider>
-      <el-form-item label="房">
+      <!-- 房产 -->
+      <el-divider>房产</el-divider>
+      <el-form-item label="房产">
         <el-switch v-model="queryForm.hasHouse" placeholder="请选择房"></el-switch>
       </el-form-item>
       <template v-if="queryForm.hasHouse">
@@ -446,8 +570,20 @@ export default {
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
-                placeholder="请输入市值（万）"
+                placeholder="请输入市值"
                 @change="handleNumberChange('queryForm', 'houseValue')"
+              ></el-input-number>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="面积（平方）" prop="houseSize">
+              <el-input-number
+                v-model="queryForm.houseSize"
+                controls-position="right"
+                :min="0"
+                style="width: 100%;"
+                placeholder="请输入面积"
+                @change="handleNumberChange('detailForm', 'houseSize')"
               ></el-input-number>
             </el-form-item>
           </el-col>
@@ -467,7 +603,7 @@ export default {
                   controls-position="right"
                   :min="0"
                   style="width: 100%;"
-                  placeholder="请输入月供（元）"
+                  placeholder="请输入月供"
                   @change="handleNumberChange('queryForm', 'houseMonthlyPayment')"
                 ></el-input-number>
               </el-form-item>
@@ -479,7 +615,7 @@ export default {
                   controls-position="right"
                   :min="0"
                   style="width: 100%;"
-                  placeholder="请输入还款期数（月）"
+                  placeholder="请输入还款期数"
                   @change="handleNumberChange('queryForm', 'housePaymentPeriod')"
                 ></el-input-number>
               </el-form-item>
@@ -492,7 +628,7 @@ export default {
                 controls-position="right"
                 :min="0"
                 style="width: 100%;"
-                placeholder="请输入房龄（年）"
+                placeholder="请输入房龄"
                 @change="handleNumberChange('queryForm', 'houseAge')"
               ></el-input-number>
             </el-form-item>
@@ -510,7 +646,7 @@ export default {
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="权利人年龄（年）" prop="houseInterestAge">
+            <el-form-item label="权利人年龄" prop="houseInterestAge">
               <el-input-number
                 v-model="queryForm.houseInterestAge"
                 controls-position="right"
@@ -531,9 +667,9 @@ export default {
           </el-col>
         </el-row>
       </template>
-      <!-- 车 -->
-      <el-divider>车</el-divider>
-      <el-form-item label="车">
+      <!-- 车辆 -->
+      <el-divider>车辆</el-divider>
+      <el-form-item label="车辆">
         <el-switch v-model="queryForm.hasCar" placeholder="请选择车"></el-switch>
       </el-form-item>
       <template v-if="queryForm.hasCar">
@@ -671,6 +807,18 @@ export default {
                 style="width: 100%;"
                 placeholder="请输入缴费时长"
                 @change="handleNumberChange('queryForm', 'policyPaymentPeriod')"
+              ></el-input-number>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="缴纳次数" prop="policyPaymentTimes">
+              <el-input-number
+                v-model="queryForm.policyPaymentTimes"
+                controls-position="right"
+                :min="0"
+                style="width: 100%;"
+                placeholder="请输入缴费时长"
+                @change="handleNumberChange('detailForm', 'policyPaymentTimes')"
               ></el-input-number>
             </el-form-item>
           </el-col>
@@ -835,6 +983,54 @@ export default {
                 ></el-input-number>
               </el-form-item>
             </el-col>
+            <el-col :span="8">
+              <el-form-item label="近3月有（次）" prop="creditThreeMonthHasTimes">
+                <el-input-number
+                  v-model="queryForm.creditThreeMonthHasTimes"
+                  controls-position="right"
+                  :min="0"
+                  style="width: 100%;"
+                  placeholder="请输入近3月有（次）"
+                  @change="handleNumberChange('detailForm', 'creditThreeMonthHasTimes')"
+                ></el-input-number>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="近6月有（次）" prop="creditSixMonthHasTimes">
+                <el-input-number
+                  v-model="queryForm.creditSixMonthHasTimes"
+                  controls-position="right"
+                  :min="0"
+                  style="width: 100%;"
+                  placeholder="请输入近6月有（次）"
+                  @change="handleNumberChange('detailForm', 'creditSixMonthHasTimes')"
+                ></el-input-number>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="近1年有（次）" prop="creditYearHasTimes">
+                <el-input-number
+                  v-model="queryForm.creditYearHasTimes"
+                  controls-position="right"
+                  :min="0"
+                  style="width: 100%;"
+                  placeholder="请输入近1年有（次）"
+                  @change="handleNumberChange('detailForm', 'creditYearHasTimes')"
+                ></el-input-number>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="近2年有（次）" prop="creditTwoYearHasTimes">
+                <el-input-number
+                  v-model="queryForm.creditTwoYearHasTimes"
+                  controls-position="right"
+                  :min="0"
+                  style="width: 100%;"
+                  placeholder="请输入近2年有（次）"
+                  @change="handleNumberChange('detailForm', 'creditTwoYearHasTimes')"
+                ></el-input-number>
+              </el-form-item>
+            </el-col>
           </template>
         </el-row>
       </template>
@@ -925,103 +1121,6 @@ export default {
         <el-button type="primary" @click="onSubmit">查询</el-button>
       </el-form-item>
     </el-form>
-    <el-table border :data="resultData" style="width: 100%,">
-      <!-- <el-table-column show-overflow-tooltip label="序号">
-        <template slot-scope="scope">
-          <span>{{ scope.row.id }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="贷款类型">
-        <template slot-scope="scope">
-          <span>{{ scope.row.loan_type }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="贷款机构名称">
-        <template slot-scope="scope">
-          <span>{{ scope.row.loan_name }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="国籍">
-        <template slot-scope="scope">
-          <span>{{ scope.row.nation }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="年龄">
-        <template slot-scope="scope">
-          <span>{{ scope.row.age }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="贷款额度">
-        <template slot-scope="scope">
-          <span>{{ scope.row.loan_limit }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="贷款利息">
-        <template slot-scope="scope">
-          <span>{{ scope.row.loan_interest }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="还款方式">
-        <template slot-scope="scope">
-          <span>{{ scope.row.repayment_method }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="查询次数">
-        <template slot-scope="scope">
-          <span>{{ scope.row.query_times }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="居住地">
-        <template slot-scope="scope">
-          <span>{{ scope.row.resident }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="期限">
-        <template slot-scope="scope">
-          <span>{{ scope.row.repayment_term }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="需要材料">
-        <template slot-scope="scope">
-          <span>{{ scope.row.material }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="征信要求">
-        <template slot-scope="scope">
-          <span>{{ scope.row.credit_requirements }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="提前还款">
-        <template slot-scope="scope">
-          <span>{{ scope.row.prepayment }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="进件要求">
-        <template slot-scope="scope">
-          <span>{{ scope.row.incoming_requirements }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="申请流程">
-        <template slot-scope="scope">
-          <span>{{ scope.row.application_process }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="额度算法">
-        <template slot-scope="scope">
-          <span>{{ scope.row.quota_algorithm }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column show-overflow-tooltip label="负债算法">
-        <template slot-scope="scope">
-          <span>{{ scope.row.debt_algorithm }}</span>
-        </template>
-      </el-table-column>-->
-      <el-table-column show-overflow-tooltip label="贷款机构信息" :min-width="200">
-        <template slot-scope="scope">
-          <span>{{ scope.row.org_info }}</span>
-        </template>
-      </el-table-column>
-    </el-table>
   </div>
 </template>
 
@@ -1031,6 +1130,11 @@ export default {
   .query-form {
     .el-form-item__label {
       text-align-last: justify;
+    }
+  }
+  .query-drawer {
+    .result-wrapper {
+      padding: 0 20px;
     }
   }
 }

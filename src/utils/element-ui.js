@@ -40,6 +40,7 @@ import {
   MenuItemGroup,
   Popover,
   Popconfirm,
+  Drawer,
 } from 'element-ui'
 
 Vue.use(Row)
@@ -78,6 +79,7 @@ Vue.use(MenuItem)
 Vue.use(MenuItemGroup)
 Vue.use(Popover)
 Vue.use(Popconfirm)
+Vue.use(Drawer)
 Vue.use(Loading.directive)
 
 Vue.prototype.$loading = Loading.service

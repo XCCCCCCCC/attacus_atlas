@@ -37,8 +37,8 @@ export default {
         highAge: 0, // 最大年龄
         lowLoanLimit: 0, // 最低贷款额度
         highLoanLimit: 0, // 最高贷款额度
-        isKnow: true, // 家人是否知晓
-        isBlankRoster: false, // 是否白户
+        isKnow: true, // 是否支持不通知家人
+        isBlankRoster: false, // 是否支持白户
         // 上班
         hasWork: false,
         workAccumulationFund: 0, // 公积金
@@ -46,7 +46,7 @@ export default {
         workSalary: 0, // 打卡工资
         workHour: 0, // 工作时长
         workCompanyNature: [], // 公司性质（事业/国企/民营）
-        // 做生意
+        // 生意
         hasBusiness: false,
         businessLicense: '', // 营业执照
         businessPosition: '', // 职位
@@ -55,19 +55,20 @@ export default {
         businessIndustry: '', // 经营行业
         businessFlow: 0, // 流水
         businessTax: 0, // 税
-        // 房
+        // 房产
         hasHouse: false,
         houseLocal: true, // 是否本地（上海/外地）
         houseRegion: '', // 区域
         houseBuyMethod: 1, // 购买方式（全款/按揭）
         houseValue: 0, // 市值（单位；万）
+        houseSize: 0, // 面积（单位；平方）
         houseMonthlyPayment: 0, // 月供（元）
         housePaymentPeriod: 0, // 还款期数（月）
         houseAge: 0, // 房龄（年）
         houseInterestNum: 1, // 权利人数
         houseInterestAge: 0, // 权利人年龄
         houseIsMortage: false, // 是否抵押（是/否）
-        // 车
+        // 车辆
         hasCar: false,
         carLocal: true, // 是否本地（是/否）
         carLicense: '', // 车牌
@@ -84,9 +85,10 @@ export default {
         policyPaymentMethod: 1, // 缴费方式（月/年）
         policyYearCost: 0, // 年费（元）
         policyPaymentPeriod: 0, // 缴费时长（月）
+        policyPaymentTimes: 0, // 缴费次数
         // 征信
         hasCredit: false,
-        creditIsDelay: false, // 是否当前有逾期（是/否）
+        creditIsDelay: false, // 是否支持当前有逾期（是/否）
         creditThreeMonthDelayTimes: 0, // 近3月逾期次数
         creditSixMonthDelayTimes: 0, // 近6月逾期次数
         creditYearDelayTimes: 0, // 近1年逾期次数
@@ -99,6 +101,10 @@ export default {
         creditSixMonthQueryTimes: 0, // 近6月查询
         creditYearQueryTimes: 0, // 近1年查询
         creditTwoYearQueryTimes: 0, // 近2年查询
+        creditThreeMonthHasTimes: 0, // 近3月有
+        creditSixMonthHasTimes: 0, // 近6月有
+        creditYearHasTimes: 0, // 近1年有
+        creditTwoYearHasTimes: 0, // 近2年有
         // 负债
         hasDebt: false,
         debtCreditAmount: 0, // 信用卡总额度
@@ -196,7 +202,13 @@ export default {
           }
           add(data)
             .then((res) => {
-              this.$router.push({ path: 'storage' })
+              this.$message({
+                message: '存储成功！',
+                type: 'success',
+                onClose: () => {
+                  this.$router.push({ path: 'storage' })
+                },
+              })
             })
             .catch((err) => {
               console.log(err)
@@ -395,16 +407,16 @@ export default {
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="家人是否知晓" prop="isKnow">
-            <el-radio-group v-model="detailForm.isKnow" placeholder="请选择家人是否知晓">
+          <el-form-item label="是否支持不通知家人" prop="isKnow">
+            <el-radio-group v-model="detailForm.isKnow" placeholder="请选择是否支持不通知家人">
               <el-radio :label="true">是</el-radio>
               <el-radio :label="false">否</el-radio>
             </el-radio-group>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="是否白户" prop="isBlankRoster">
-            <el-radio-group v-model="detailForm.isBlankRoster" placeholder="请选择是否白户">
+          <el-form-item label="是否支持白户" prop="isBlankRoster">
+            <el-radio-group v-model="detailForm.isBlankRoster" placeholder="请选择是否支持白户">
               <el-radio :label="true">是</el-radio>
               <el-radio :label="false">否</el-radio>
             </el-radio-group>
@@ -478,9 +490,9 @@ export default {
           </el-col>
         </el-row>
       </template>
-      <!-- 做生意 -->
-      <el-divider>做生意</el-divider>
-      <el-form-item label="做生意">
+      <!-- 生意 -->
+      <el-divider>生意</el-divider>
+      <el-form-item label="生意">
         <el-switch v-model="detailForm.hasBusiness"></el-switch>
       </el-form-item>
       <template v-if="detailForm.hasBusiness">
@@ -517,22 +529,22 @@ export default {
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="做生意流水（元）" prop="businessFlow">
+            <el-form-item label="流水（万）" prop="businessFlow">
               <el-input v-model="detailForm.businessFlow"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="28">
           <el-col :span="8">
-            <el-form-item label="做生意税（元）" prop="businessTax">
+            <el-form-item label="生意缴纳税额(元)" prop="businessTax">
               <el-input v-model="detailForm.businessTax"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
       </template>
-      <!-- 房 -->
-      <el-divider>房</el-divider>
-      <el-form-item label="房">
+      <!-- 房产 -->
+      <el-divider>房产</el-divider>
+      <el-form-item label="房产">
         <el-switch v-model="detailForm.hasHouse" placeholder="请选择房"></el-switch>
       </el-form-item>
       <template v-if="detailForm.hasHouse">
@@ -559,6 +571,18 @@ export default {
                 style="width: 100%;"
                 placeholder="请输入市值"
                 @change="handleNumberChange('detailForm', 'houseValue')"
+              ></el-input-number>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="面积（平方）" prop="houseSize">
+              <el-input-number
+                v-model="detailForm.houseSize"
+                controls-position="right"
+                :min="0"
+                style="width: 100%;"
+                placeholder="请输入面积"
+                @change="handleNumberChange('detailForm', 'houseSize')"
               ></el-input-number>
             </el-form-item>
           </el-col>
@@ -642,9 +666,9 @@ export default {
           </el-col>
         </el-row>
       </template>
-      <!-- 车 -->
-      <el-divider>车</el-divider>
-      <el-form-item label="车">
+      <!-- 车辆 -->
+      <el-divider>车辆</el-divider>
+      <el-form-item label="车辆">
         <el-switch v-model="detailForm.hasCar" placeholder="请选择车"></el-switch>
       </el-form-item>
       <template v-if="detailForm.hasCar">
@@ -785,6 +809,18 @@ export default {
               ></el-input-number>
             </el-form-item>
           </el-col>
+          <el-col :span="8">
+            <el-form-item label="缴纳次数" prop="policyPaymentTimes">
+              <el-input-number
+                v-model="detailForm.policyPaymentTimes"
+                controls-position="right"
+                :min="0"
+                style="width: 100%;"
+                placeholder="请输入缴费时长"
+                @change="handleNumberChange('detailForm', 'policyPaymentTimes')"
+              ></el-input-number>
+            </el-form-item>
+          </el-col>
         </el-row>
       </template>
 
@@ -794,8 +830,8 @@ export default {
         <el-switch v-model="detailForm.hasCredit" placeholder="请选择征信"></el-switch>
       </el-form-item>
       <template v-if="detailForm.hasCredit">
-        <el-form-item label="是否当前有逾期" prop="creditIsDelay">
-          <el-radio-group v-model="detailForm.creditIsDelay" placeholder="请选择是否当前有逾期">
+        <el-form-item label="是否支持当前有逾期" prop="creditIsDelay">
+          <el-radio-group v-model="detailForm.creditIsDelay" placeholder="请选择是否支持当前有逾期">
             <el-radio :label="true">是</el-radio>
             <el-radio :label="false">否</el-radio>
           </el-radio-group>
@@ -943,6 +979,54 @@ export default {
                   style="width: 100%;"
                   placeholder="请输入近2年查询"
                   @change="handleNumberChange('detailForm', 'creditTwoYearQueryTimes')"
+                ></el-input-number>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="近3月有（次）" prop="creditThreeMonthHasTimes">
+                <el-input-number
+                  v-model="detailForm.creditThreeMonthHasTimes"
+                  controls-position="right"
+                  :min="0"
+                  style="width: 100%;"
+                  placeholder="请输入近3月有（次）"
+                  @change="handleNumberChange('detailForm', 'creditThreeMonthHasTimes')"
+                ></el-input-number>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="近6月有（次）" prop="creditSixMonthHasTimes">
+                <el-input-number
+                  v-model="detailForm.creditSixMonthHasTimes"
+                  controls-position="right"
+                  :min="0"
+                  style="width: 100%;"
+                  placeholder="请输入近6月有（次）"
+                  @change="handleNumberChange('detailForm', 'creditSixMonthHasTimes')"
+                ></el-input-number>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="近1年有（次）" prop="creditYearHasTimes">
+                <el-input-number
+                  v-model="detailForm.creditYearHasTimes"
+                  controls-position="right"
+                  :min="0"
+                  style="width: 100%;"
+                  placeholder="请输入近1年有（次）"
+                  @change="handleNumberChange('detailForm', 'creditYearHasTimes')"
+                ></el-input-number>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="近2年有（次）" prop="creditTwoYearHasTimes">
+                <el-input-number
+                  v-model="detailForm.creditTwoYearHasTimes"
+                  controls-position="right"
+                  :min="0"
+                  style="width: 100%;"
+                  placeholder="请输入近2年有（次）"
+                  @change="handleNumberChange('detailForm', 'creditTwoYearHasTimes')"
                 ></el-input-number>
               </el-form-item>
             </el-col>

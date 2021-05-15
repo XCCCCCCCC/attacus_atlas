@@ -191,12 +191,12 @@ export default {
           <span>{{ scope.row.high_loan_limit }}</span>
         </template>
       </el-table-column>
-      <el-table-column :width="150" show-overflow-tooltip label="是否白户（Y/N）">
+      <el-table-column :width="150" show-overflow-tooltip label="是否支持白户（Y/N）">
         <template slot-scope="scope">
           <span>{{ scope.row.is_blank_roster }}</span>
         </template>
       </el-table-column>
-      <el-table-column :width="180" show-overflow-tooltip label="家人是否知道（Y/N）">
+      <el-table-column :width="180" show-overflow-tooltip label="是否支持不通知家人/N）">
         <template slot-scope="scope">
           <span>{{ scope.row.is_know }}</span>
         </template>
@@ -231,137 +231,142 @@ export default {
           <span>{{ scope.row.work_company_nature }}</span>
         </template>
       </el-table-column>
-      <el-table-column :width="150" show-overflow-tooltip label="是否做生意（Y/N）">
+      <el-table-column :width="150" show-overflow-tooltip label="是否生意（Y/N）">
         <template slot-scope="scope">
           <span>{{ scope.row.has_business }}</span>
         </template>
       </el-table-column>
-      <el-table-column :width="150" show-overflow-tooltip label="做生意营业执照">
+      <el-table-column :width="150" show-overflow-tooltip label="生意营业执照">
         <template slot-scope="scope">
           <span>{{ scope.row.business_license }}</span>
         </template>
       </el-table-column>
-      <el-table-column :width="150" show-overflow-tooltip label="做生意职位">
+      <el-table-column :width="150" show-overflow-tooltip label="生意职位">
         <template slot-scope="scope">
           <span>{{ scope.row.business_position }}</span>
         </template>
       </el-table-column>
-      <el-table-column :width="180" show-overflow-tooltip label="做生意经营时长（年）">
+      <el-table-column :width="180" show-overflow-tooltip label="生意经营时长（年）">
         <template slot-scope="scope">
           <span>{{ scope.row.business_hour }}</span>
         </template>
       </el-table-column>
-      <el-table-column :width="150" show-overflow-tooltip label="做生意经营地址">
+      <el-table-column :width="150" show-overflow-tooltip label="生意经营地址">
         <template slot-scope="scope">
           <span>{{ scope.row.business_address }}</span>
         </template>
       </el-table-column>
-      <el-table-column :width="150" show-overflow-tooltip label="做生意经营行业">
+      <el-table-column :width="150" show-overflow-tooltip label="生意经营行业">
         <template slot-scope="scope">
           <span>{{ scope.row.business_industry }}</span>
         </template>
       </el-table-column>
-      <el-table-column :width="150" show-overflow-tooltip label="做生意流水（万）">
+      <el-table-column :width="150" show-overflow-tooltip label="生意流水（万）">
         <template slot-scope="scope">
           <span>{{ scope.row.business_flow }}</span>
         </template>
       </el-table-column>
-      <el-table-column :width="150" show-overflow-tooltip label="做生意税（元）">
+      <el-table-column :width="150" show-overflow-tooltip label="生意税（元）">
         <template slot-scope="scope">
           <span>{{ scope.row.business_tax }}</span>
         </template>
       </el-table-column>
-      <el-table-column :width="150" show-overflow-tooltip label="是否有房产（Y/N）">
+      <el-table-column :width="150" show-overflow-tooltip label="是否有房产产（Y/N）">
         <template slot-scope="scope">
           <span>{{ scope.row.has_house }}</span>
         </template>
       </el-table-column>
-      <el-table-column :width="180" show-overflow-tooltip label="房屋是否本地（Y/N）">
+      <el-table-column :width="180" show-overflow-tooltip label="房产屋是否本地（Y/N）">
         <template slot-scope="scope">
           <span>{{ scope.row.house_local }}</span>
         </template>
       </el-table-column>
-      <el-table-column :width="150" show-overflow-tooltip label="房屋区域">
+      <el-table-column :width="150" show-overflow-tooltip label="房产屋区域">
         <template slot-scope="scope">
           <span>{{ scope.row.house_region }}</span>
         </template>
       </el-table-column>
-      <el-table-column :width="150" show-overflow-tooltip label="房屋购买方式">
+      <el-table-column :width="150" show-overflow-tooltip label="房产屋购买方式">
         <template slot-scope="scope">
           <span>{{ scope.row.house_buy_method }}</span>
         </template>
       </el-table-column>
-      <el-table-column :width="150" show-overflow-tooltip label="房屋市值（万）">
+      <el-table-column :width="150" show-overflow-tooltip label="房产屋市值（万）">
         <template slot-scope="scope">
           <span>{{ scope.row.house_value }}</span>
         </template>
       </el-table-column>
-      <el-table-column :width="150" show-overflow-tooltip label="房屋月供（元）">
+      <el-table-column :width="150" show-overflow-tooltip label="房产屋面积（万）">
+        <template slot-scope="scope">
+          <span>{{ scope.row.house_size }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :width="150" show-overflow-tooltip label="房产屋月供（元）">
         <template slot-scope="scope">
           <span>{{ scope.row.house_monthly_payment }}</span>
         </template>
       </el-table-column>
-      <el-table-column :width="150" show-overflow-tooltip label="房屋还款期数（月）">
+      <el-table-column :width="150" show-overflow-tooltip label="房产屋还款期数（月）">
         <template slot-scope="scope">
           <span>{{ scope.row.house_payment_period }}</span>
         </template>
       </el-table-column>
-      <el-table-column :width="150" show-overflow-tooltip label="房龄（年）">
+      <el-table-column :width="150" show-overflow-tooltip label="房产龄（年）">
         <template slot-scope="scope">
           <span>{{ scope.row.house_age }}</span>
         </template>
       </el-table-column>
-      <el-table-column :width="150" show-overflow-tooltip label="房屋权利人数">
+      <el-table-column :width="150" show-overflow-tooltip label="房产屋权利人数">
         <template slot-scope="scope">
           <span>{{ scope.row.house_interest_num }}</span>
         </template>
       </el-table-column>
-      <el-table-column :width="150" show-overflow-tooltip label="房屋权利人年龄">
+      <el-table-column :width="150" show-overflow-tooltip label="房产屋权利人年龄">
         <template slot-scope="scope">
           <span>{{ scope.row.house_interest_age }}</span>
         </template>
       </el-table-column>
-      <el-table-column :width="180" show-overflow-tooltip label="房屋是否抵押（Y/N）">
+      <el-table-column :width="180" show-overflow-tooltip label="房产屋是否抵押（Y/N）">
         <template slot-scope="scope">
           <span>{{ scope.row.house_is_mortgage }}</span>
         </template>
       </el-table-column>
-      <el-table-column :width="150" show-overflow-tooltip label="是否有车（Y/N）">
+      <el-table-column :width="150" show-overflow-tooltip label="是否有车辆（Y/N）">
         <template slot-scope="scope">
           <span>{{ scope.row.has_car }}</span>
         </template>
       </el-table-column>
-      <el-table-column :width="150" show-overflow-tooltip label="车是否本地（Y/N）">
+      <el-table-column :width="150" show-overflow-tooltip label="车辆是否本地（Y/N）">
         <template slot-scope="scope">
           <span>{{ scope.row.car_local }}</span>
         </template>
       </el-table-column>
-      <el-table-column :width="150" show-overflow-tooltip label="车牌照">
+      <el-table-column :width="150" show-overflow-tooltip label="车辆牌照">
         <template slot-scope="scope">
           <span>{{ scope.row.car_license }}</span>
         </template>
       </el-table-column>
-      <el-table-column :width="150" show-overflow-tooltip label="车购买方式">
+      <el-table-column :width="150" show-overflow-tooltip label="车辆购买方式">
         <template slot-scope="scope">
           <span>{{ scope.row.car_buy_method }}</span>
         </template>
       </el-table-column>
-      <el-table-column :width="150" show-overflow-tooltip label="车辆市值（万）">
+      <el-table-column :width="150" show-overflow-tooltip label="车辆辆市值（万）">
         <template slot-scope="scope">
           <span>{{ scope.row.car_value }}</span>
         </template>
       </el-table-column>
-      <el-table-column :width="150" show-overflow-tooltip label="车月供（元）">
+      <el-table-column :width="150" show-overflow-tooltip label="车辆月供（元）">
         <template slot-scope="scope">
           <span>{{ scope.row.car_monthly_payment }}</span>
         </template>
       </el-table-column>
-      <el-table-column :width="150" show-overflow-tooltip label="车还款期数（月）">
+      <el-table-column :width="150" show-overflow-tooltip label="车辆还款期数（月）">
         <template slot-scope="scope">
           <span>{{ scope.row.car_payment_period }}</span>
         </template>
       </el-table-column>
-      <el-table-column :width="150" show-overflow-tooltip label="车龄（年）">
+      <el-table-column :width="150" show-overflow-tooltip label="车辆龄（年）">
         <template slot-scope="scope">
           <span>{{ scope.row.car_age }}</span>
         </template>
@@ -392,6 +397,11 @@ export default {
           <span>{{ scope.row.policy_payment_method }}</span>
         </template>
       </el-table-column>
+      <el-table-column :width="150" show-overflow-tooltip label="保单缴纳次数">
+        <template slot-scope="scope">
+          <span>{{ scope.row.policy_payment_times }}</span>
+        </template>
+      </el-table-column>
       <el-table-column :width="150" show-overflow-tooltip label="保单年费（元）">
         <template slot-scope="scope">
           <span>{{ scope.row.policy_year_cost }}</span>
@@ -408,7 +418,7 @@ export default {
           <span>{{ scope.row.has_credit }}</span>
         </template>
       </el-table-column>
-      <el-table-column :width="200" show-overflow-tooltip label="征信是否当前有逾期(是/否)">
+      <el-table-column :width="200" show-overflow-tooltip label="征信是否支持当前有逾期(是/否)">
         <template slot-scope="scope">
           <span>{{ scope.row.credit_is_delay }}</span>
         </template>
@@ -473,10 +483,35 @@ export default {
           <span>{{ scope.row.credit_two_year_query_times }}</span>
         </template>
       </el-table-column>
+      <el-table-column :width="150" show-overflow-tooltip label="征信近3月有（次）">
+        <template slot-scope="scope">
+          <span>{{ scope.row.credit_three_month_has_times }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :width="150" show-overflow-tooltip label="征信近6月有（次）">
+        <template slot-scope="scope">
+          <span>{{ scope.row.credit_six_month_has_times }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :width="150" show-overflow-tooltip label="征信近1年有（次）">
+        <template slot-scope="scope">
+          <span>{{ scope.row.credit_year_has_times }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :width="150" show-overflow-tooltip label="征信近2年有（次）">
+        <template slot-scope="scope">
+          <span>{{ scope.row.credit_two_year_has_times }}</span>
+        </template>
+      </el-table-column>
 
       <el-table-column :width="150" show-overflow-tooltip label="是否有负债（Y/N）">
         <template slot-scope="scope">
           <span>{{ scope.row.has_debt }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :width="150" show-overflow-tooltip label="负债比">
+        <template slot-scope="scope">
+          <span>{{ scope.row.debt_ratio }}</span>
         </template>
       </el-table-column>
       <el-table-column :width="150" show-overflow-tooltip label="负债信用卡总额">
@@ -507,6 +542,11 @@ export default {
       <el-table-column :width="150" show-overflow-tooltip label="负债网贷总额">
         <template slot-scope="scope">
           <span>{{ scope.row.debt_online_loan_amount }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :width="150" show-overflow-tooltip label="存储时间">
+        <template slot-scope="scope">
+          <span>{{ scope.row.dt }}</span>
         </template>
       </el-table-column>
 
